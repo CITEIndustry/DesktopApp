@@ -18,6 +18,7 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 
@@ -85,7 +86,32 @@ public class Servidor extends WebSocketServer {
         }
         @Override public void onMessage(WebSocket conn, String message) {
             //Accions a fer quan es reben dades d'una conexio
-            System.out.println("Rebut missatge: " + message);
+            Gson gson = new Gson();
+            User user = gson.fromJson(message, User.class);
+            //Object objecte = bytesToObject(ByteBuffer.wrap(message.array()));
+            //if(objecte.getClass()==JsonObject.class){
+                //JsonObject usuari = (JsonObject) bytesToObject(ByteBuffer.wrap(message.array()));
+                ResultSet rs = UtilsSQLite.querySelect(connDB, "SELECT * FROM user WHERE nom='"+user.getNom()+"' and contrasenya='"+user.getContra()+"';");
+                try {
+                    if(rs.getString("nom")!=null){
+                        System.out.println("OK Usuari correte");
+                        System.out.println("Usuari "+user.getNom()+" Correcte");
+                        this.broadcast("OK");
+                        //this.broadcast(objToBytes(user));
+                    }
+                    else{
+                        System.out.println("ERROR Usuari incorrecte");
+                        this.broadcast("ERROR");
+                        this.stop(1000);
+                    }
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            //}
         }
         @Override public void onMessage(WebSocket conn, ByteBuffer message) {
             //Accions a fer quan es reben dades d'una conexio
