@@ -14,6 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import javax.swing.JButton;
+
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -97,6 +99,7 @@ public class Servidor extends WebSocketServer {
                         System.out.println("OK correct user");
                         System.out.println("User "+user.getNom()+" Correct");
                         this.broadcast("OK");
+                        this.broadcast(objToBytes(new JButton()));
                         //this.broadcast(objToBytes(user));
                     }
                     else{
@@ -139,7 +142,7 @@ public class Servidor extends WebSocketServer {
                     e.printStackTrace();
                 }
             }
-        }
+        }*/
         public static byte[] objToBytes (Object obj) {
             byte[] result = null;
             try {
@@ -151,7 +154,7 @@ public class Servidor extends WebSocketServer {
                 result = bos.toByteArray();
             } catch (IOException e) { e.printStackTrace(); }
             return result;
-        }*/
+        }
      
         public static Object bytesToObject (ByteBuffer arr) {
             Object result = null;
