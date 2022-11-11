@@ -18,6 +18,8 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import com.google.gson.JsonObject;
+
 
 public class Servidor extends WebSocketServer {
         private Connection connDB;
@@ -88,13 +90,13 @@ public class Servidor extends WebSocketServer {
         @Override public void onMessage(WebSocket conn, ByteBuffer message) {
             //Accions a fer quan es reben dades d'una conexio
             Object objecte = bytesToObject(ByteBuffer.wrap(message.array()));
-            if(objecte.getClass()==User.class){
-                User usuari = (User) bytesToObject(ByteBuffer.wrap(message.array()));
-                ResultSet rs = UtilsSQLite.querySelect(connDB, "SELECT * FROM user WHERE nom='"+usuari.getNom()+"' and contrasenya='"+usuari.getContra()+"';");
+            if(objecte.getClass()==JsonObject.class){
+                JsonObject usuari = (JsonObject) bytesToObject(ByteBuffer.wrap(message.array()));
+                ResultSet rs = UtilsSQLite.querySelect(connDB, "SELECT * FROM user WHERE nom='"+usuari.get("User")+"' and contrasenya='"+usuari.get("Password")+"';");
                 try {
                     if(rs.getString("nom")!=null){
                         System.out.println("OK Usuari correte");
-                        System.out.println("Usuari "+usuari.getNom()+" Correcte");
+                        System.out.println("Usuari "+usuari.get("User")+" Correcte");
                         this.broadcast("OK");
                         this.broadcast(objToBytes(usuari));
                     }
