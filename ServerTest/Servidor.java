@@ -30,7 +30,7 @@ public class Servidor extends WebSocketServer {
             java.lang.System.setProperty("jdk.tls.client.protocols", "TLSv1,TLSv1.1,TLSv1.2");
             Servidor servidor = new Servidor(port);
             servidor.start();
-            System.out.println("Servidor funcionant al port: " + servidor.getPort());
+            System.out.println("Server working on port: " + servidor.getPort());
             boolean running = true;
             Scanner sc = new Scanner(System.in);
             while(running){
@@ -53,21 +53,21 @@ public class Servidor extends WebSocketServer {
             // TODO Auto-generated method stub
             //Accions a fer quan s'obre una connexio
             // Saludem personalment al nou client
-            conn.send("Iniciat servidor industrial"); 
+            conn.send("Started industrial server"); 
 
             // Enviem la direcció URI del nou client a tothom 
-            broadcast("Nova connexió: " + handshake.getResourceDescriptor());
+            broadcast("New connection: " + handshake.getResourceDescriptor());
 
             // Mostrem per pantalla (servidor) la nova connexió
             String host = conn.getRemoteSocketAddress().getAddress().getHostAddress();
-            System.out.println(host + " s'ha connectat");
+            System.out.println(host + " connected");
         }
         @Override
         public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-            broadcast(conn + " s'ha desconnectat");
+            broadcast(conn + " disconnected");
 
         // Mostrem per pantalla (servidor) la desconnexió
-        System.out.println(conn + " s'ha desconnectat");
+        System.out.println(conn + " disconnected");
         }
         @Override
         public void onError(WebSocket conn, Exception ex) {
@@ -77,7 +77,7 @@ public class Servidor extends WebSocketServer {
         @Override
         public void onStart() {
             // TODO Auto-generated method stub
-            System.out.println("Connectat client");
+            System.out.println("Connected client");
             setConnectionLostTimeout(0);
             setConnectionLostTimeout(100);
             String basePath = System.getProperty("user.dir") + File.separator;
@@ -94,13 +94,13 @@ public class Servidor extends WebSocketServer {
                 ResultSet rs = UtilsSQLite.querySelect(connDB, "SELECT * FROM user WHERE nom='"+user.getNom()+"' and contrasenya='"+user.getContra()+"';");
                 try {
                     if(rs.getString("nom")!=null){
-                        System.out.println("OK Usuari correte");
-                        System.out.println("Usuari "+user.getNom()+" Correcte");
+                        System.out.println("OK correct user");
+                        System.out.println("User "+user.getNom()+" Correct");
                         this.broadcast("OK");
                         //this.broadcast(objToBytes(user));
                     }
                     else{
-                        System.out.println("ERROR Usuari incorrecte");
+                        System.out.println("ERROR incorrect user");
                         this.broadcast("ERROR");
                         this.stop(1000);
                     }
@@ -113,7 +113,7 @@ public class Servidor extends WebSocketServer {
                 }
             //}
         }
-        @Override public void onMessage(WebSocket conn, ByteBuffer message) {
+        /*@Override public void onMessage(WebSocket conn, ByteBuffer message) {
             //Accions a fer quan es reben dades d'una conexio
             Object objecte = bytesToObject(ByteBuffer.wrap(message.array()));
             if(objecte.getClass()==JsonObject.class){
@@ -151,7 +151,7 @@ public class Servidor extends WebSocketServer {
                 result = bos.toByteArray();
             } catch (IOException e) { e.printStackTrace(); }
             return result;
-        }
+        }*/
      
         public static Object bytesToObject (ByteBuffer arr) {
             Object result = null;
