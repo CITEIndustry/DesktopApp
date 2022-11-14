@@ -12,9 +12,10 @@ import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
-import javax.swing.JButton;
+import javax.swing.*;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -26,6 +27,13 @@ import com.google.gson.JsonObject;
 
 public class Servidor extends WebSocketServer {
         private Connection connDB;
+        private ArrayList<String> components=null;
+        private ArrayList<JToggleButton> switches;
+        private ArrayList<JSlider> sliders;
+        private ArrayList<JSpinner> spinners;
+        private ArrayList<ArrayList> lista;
+        //private ArrayList<JS
+        
 
         public static void main(String[] args) throws IOException, InterruptedException {
             int port = 8888;
@@ -88,23 +96,33 @@ public class Servidor extends WebSocketServer {
         }
         @Override public void onMessage(WebSocket conn, String message) {
             //Accions a fer quan es reben dades d'una conexio
-            Gson gson = new Gson();
-            User user = gson.fromJson(message, User.class);
-            //Object objecte = bytesToObject(ByteBuffer.wrap(message.array()));
-            //if(objecte.getClass()==JsonObject.class){
-                //JsonObject usuari = (JsonObject) bytesToObject(ByteBuffer.wrap(message.array()));
-                ResultSet rs = UtilsSQLite.querySelect(connDB, "SELECT * FROM user WHERE nom='"+user.getNom()+"' and contrasenya='"+user.getContra()+"';");
+            if(message.equals("getComponents")){
+                this.broadcast("switch::0::on");
+                this.broadcast("slider::1::4::5::0::10::0.5");
+                this.broadcast("dropdown::2::3;;2:Label 2/3:Label 3");
+                this.broadcast("Send");
+            }
+            else{
+                String[] data = message.split(";;");
+                String[] userData =null;
+                for(int i=0;i<message.length();i++){
+                    if(data[i].split("::")[0].equals("User")){
+                        userData = data[i].split("::");
+                    }
+                }
+                //Gson gson = new Gson();
+                //User user = gson.fromJson(message, User.class);
+                ResultSet rs = UtilsSQLite.querySelect(connDB, "SELECT * FROM user WHERE name='"+userData[0]+"' and password='"+userData[1]+"';");
                 try {
-                    if(rs.getString("nom")!=null){
+                    if(rs.getString("name")!=null){
                         System.out.println("OK correct user");
-                        System.out.println("User "+user.getNom()+" Correct");
-                        this.broadcast("OK");
-                        this.broadcast(objToBytes(new JButton()));
-                        //this.broadcast(objToBytes(user));
+                        System.out.println("User "+userData[0]+" Correct");
+                        this.broadcast("message::OK");
+                        
                     }
                     else{
                         System.out.println("ERROR incorrect user");
-                        this.broadcast("ERROR");
+                        this.broadcast("message::ERROR");
                         this.stop(1000);
                     }
                 } catch (SQLException e) {
@@ -114,7 +132,7 @@ public class Servidor extends WebSocketServer {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-            //}
+            }
         }
         /*@Override public void onMessage(WebSocket conn, ByteBuffer message) {
             //Accions a fer quan es reben dades d'una conexio
@@ -150,6 +168,18 @@ public class Servidor extends WebSocketServer {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 ObjectOutputStream oos = new ObjectOutputStream(bos);
                 oos.writeObject(obj);
+                oos.flush();
+                result = bos.toByteArray();
+            } catch (IOException e) { e.printStackTrace(); }
+            return result;
+        }
+        public static byte[] arrayToBytes (ArrayList lista) {
+            byte[] result = null;
+            try {
+                // Transforma l'objecte a bytes[]
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                ObjectOutputStream oos = new ObjectOutputStream(bos);
+                oos.writeObject(lista);
                 oos.flush();
                 result = bos.toByteArray();
             } catch (IOException e) { e.printStackTrace(); }

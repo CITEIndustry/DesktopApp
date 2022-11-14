@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class crearBaseDeDatos {
+public class createDatabase {
     public static void main(String[] args) {
         String basePath = System.getProperty("user.dir") + File.separator;
         String filePath = basePath + "databaseIndustrial.db";
@@ -13,9 +13,9 @@ public class crearBaseDeDatos {
             initDatabase(filePath); 
         }
         Connection connDB = UtilsSQLite.connect(filePath);
-        ResultSet rs = UtilsSQLite.querySelect(connDB, "SELECT * FROM user WHERE nom='usuario1' and contrasenya='1234';");
+        ResultSet rs = UtilsSQLite.querySelect(connDB, "SELECT * FROM user WHERE name='usuario1' and password='1234';");
         try {
-            System.out.println(rs.getString("nom"));
+            System.out.println(rs.getString("name"));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -33,12 +33,12 @@ public class crearBaseDeDatos {
         // Crear una nova taula
         UtilsSQLite.queryUpdate(conn, "CREATE TABLE IF NOT EXISTS user ("
                                     + " id integer PRIMARY KEY AUTOINCREMENT,"
-                                    + " nom varchar(15) NOT NULL, "
-                                    + " contrasenya varchar(500));");
+                                    + " name varchar(15) NOT NULL, "
+                                    + " password varchar(500));");
 
 
         // Afegir elements a una taula
-        UtilsSQLite.queryUpdate(conn, "INSERT INTO user (nom,contrasenya) VALUES (\"usuario1\",\"1234\");");
+        UtilsSQLite.queryUpdate(conn, "INSERT INTO user (name,password) VALUES (\"usuario1\",\"1234\");");
 
 
         
