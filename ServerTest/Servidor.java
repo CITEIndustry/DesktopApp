@@ -110,6 +110,7 @@ public class Servidor extends WebSocketServer {
                         userData = data[i].split("::");
                     }
                 }
+                System.out.println(userData);
                 //Gson gson = new Gson();
                 //User user = gson.fromJson(message, User.class);
                 ResultSet rs = UtilsSQLite.querySelect(connDB, "SELECT * FROM user WHERE name='"+userData[0]+"' and password='"+userData[1]+"';");

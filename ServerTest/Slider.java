@@ -1,11 +1,11 @@
 public class Slider {
     private int id;
-    private float defaultVal;
-    private float min;
-    private float max;
-    private float step;
+    private int defaultVal;
+    private int min;
+    private int max;
+    private int step;
 
-    public Slider(int id, float defaultVal, float min, float max, float step) {
+    public Slider(int id, int defaultVal, int min, int max, int step) {
         this.id = id;
         this.defaultVal = defaultVal;
         this.min = min;
@@ -21,35 +21,35 @@ public class Slider {
         this.id = id;
     }
 
-    public float getDefaultVal() {
+    public int getDefaultVal() {
         return defaultVal;
     }
 
-    public void setDefaultVal(float defaultVal) {
+    public void setDefaultVal(int defaultVal) {
         this.defaultVal = defaultVal;
     }
 
-    public float getMin() {
+    public int getMin() {
         return min;
     }
 
-    public void setMin(float min) {
+    public void setMin(int min) {
         this.min = min;
     }
 
-    public float getMax() {
+    public int getMax() {
         return max;
     }
 
-    public void setMax(float max) {
+    public void setMax(int max) {
         this.max = max;
     }
 
-    public float getStep() {
+    public int getStep() {
         return step;
     }
 
-    public void setStep(float step) {
+    public void setStep(int step) {
         this.step = step;
     }
 }

@@ -42,10 +42,10 @@ public class frame extends JFrame {
 	private static JFileChooser filechooser = new JFileChooser(System.getProperty("user.dir"));
 	private static String filePath;
 	private static Document doc;
-	private static ArrayList<Switch> toggleButtons;
-	private static ArrayList<Slider> sliders;
-	private static ArrayList<Dropdown> dropdown;
-	private static ArrayList<JTextArea> sensor;
+	public static ArrayList<Switch> toggleButtons;
+	public static ArrayList<Slider> sliders;
+	public static ArrayList<Dropdown> dropdown;
+	public static ArrayList<JTextArea> sensor;
 	private JPanel contentPane;
 	private JPanel togglebutton_panel = new JPanel();
 	private JPanel slider_panel = new JPanel();

@@ -88,43 +88,47 @@ public class Server extends WebSocketServer {
                 String switchText="";
                 String sliderText="";
                 String comboText="";
-                for(int i=0;i<switches.size();i++){
-                    switchText="switch::"+switches.get(i).getId()+"::"+switches.get(i).getDefaultVal();
+                for(int i=0;i<frame.toggleButtons.size();i++){
+                    switchText="switch::"+frame.toggleButtons.get(i).getId()+"::"+frame.toggleButtons.get(i).getDefaultVal();
                     this.broadcast(switchText);
                 }
-                for(int i=0;i<sliders.size();i++){
-                    sliderText="slider::"+sliders.get(i).getId()+"::"+sliders.get(i).getDefaultVal()+"::"+sliders.get(i).getMax()
-                    +"::"+sliders.get(i).getMin()+"::"+sliders.get(i).getStep();
+                for(int i=0;i<frame.sliders.size();i++){
+                    sliderText="slider::"+frame.sliders.get(i).getId()+"::"+frame.sliders.get(i).getDefaultVal()+"::"+frame.sliders.get(i).getMax()
+                    +"::"+frame.sliders.get(i).getMin()+"::"+frame.sliders.get(i).getStep();
                     this.broadcast(sliderText);
                 }
-                for(int i=0;i<comboBoxes.size();i++){
-                    comboText="dropdown::"+comboBoxes.get(i).getId()+"::"+comboBoxes.get(i).getDefaultVal()+"::";
-                    for(int j=0;j<comboBoxes.get(i).getOption().length;j++){
-                        for(int k=0;k<comboBoxes.get(i).getOption()[j].length;k++){
-                            comboText=comboText+comboBoxes.get(i).getOption()[j]+":"+comboBoxes.get(i).getOption()[j][k]+"/";
+                for(int i=0;i<frame.dropdown.size();i++){
+                    comboText="dropdown::"+frame.dropdown.get(i).getId()+"::"+frame.dropdown.get(i).getDefaultVal()+"::";
+                    for(int j=0;j<frame.dropdown.get(i).getOption().length;j++){
+                        for(int k=0;k<frame.dropdown.get(i).getOption()[j].length;k++){
+                            comboText=comboText+frame.dropdown.get(i).getOption()[j]+":"+frame.dropdown.get(i).getOption()[j][k]+"/";
                         }
                     }
+                    this.broadcast(comboText);
                 }
+                /* 
                 for(int i=0;i<sensors.size();i++){
                     this.broadcast(sensors.get(i));
                 }
+                */
                 this.broadcast("Send");
             }
             else{
                 String[] data = message.split(";;");
                 String[] userData =null;
-                for(int i=0;i<message.length();i++){
+                for(int i=0;i<data.length;i++){
                     if(data[i].split("::")[0].equals("User")){
                         userData = data[i].split("::");
+                        System.out.println(userData[1]);
                     }
                 }
                 //Gson gson = new Gson();
                 //User user = gson.fromJson(message, User.class);
-                ResultSet rs = UtilsSQLite.querySelect(connDB, "SELECT * FROM user WHERE name='"+userData[0]+"' and password='"+userData[1]+"';");
+                ResultSet rs = UtilsSQLite.querySelect(connDB, "SELECT * FROM user WHERE name='"+userData[1]+"' and password='"+userData[2]+"';");
                 try {
                     if(rs.getString("name")!=null){
                         System.out.println("OK correct user");
-                        System.out.println("User "+userData[0]+" Correct");
+                        System.out.println("User "+userData[1]+" Correct");
                         this.broadcast("message::OK");
                         
                     }
