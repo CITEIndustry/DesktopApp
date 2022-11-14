@@ -1,0 +1,4 @@
+Base de dades creada consta d'una taula User, aquesta taula té tres atributs:
+Id: Que es la clau primaria i s'autoincrementa.
+Name: Que es de tipus varchar i es el nom de l'usuari.
+Password: Que es de tipus varchar i emmagatzema la contrasenya de l'usuari.
