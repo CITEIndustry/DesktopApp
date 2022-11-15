@@ -1,14 +1,15 @@
 # DesktopApp
-A. Base de Dades
-La base de dades constará d'una sola taula User amb els atributs:
-  - 1. Id: Es la clau primària de tipus numèric que s'autoincrementa.
-  - 2. Name: Un varchar on documentem el nom de l'usuari.
-  - 3. Password: Un varchar on guardem la contrasenya de l'usuari.
-La base de dades ve amb un usuari de prova amb l'id: 1, el name: "usuario1" i la password: 1234.
-Per a obtenir la base de dades s'ha d'executar el programa "createDatabase.java" i s'ha de tenir el programa "utilsSQLite.java" al mateix espai per a trucar funcions. 
-Un cop s'ha executat "createDatabase.java" hi haurà a la seva mateixa carpeta un document "databaseIndustrial.db", amb l'usuari esmentat anteriorment.
 
-B. API del Servidor que conecta amb l'app
-Tenim una classe "Server.java" que en rebre un missatge compararà si hem d'enviar components o una confirmació. Per enviar la confirmació rebrem de l'aplicació una cadena
-de text codificada de certa forma, el servidor treurà els components necessaris i compararà les credencials enviades amb la base de dades, si troba un usuari amb aquestes
-credencials farà un broadcast que digui que tot està bé per a inicar l'aplicació, si no es així dirà que hi ha un error i tallarà la connexió.
+A. Database
+The database will consist of a single User table with the attributes:
+  - 1. Id: It is the numerical primary key that is autoincreased.
+  - 2. Name: A varchar where we document the user's name.
+  - 3. Password: A varchar where we store the user's password.
+The database comes with a test user with id: 1, name: "user1" and password: 1234.
+To get the database you must run the "createDatabase.java" program and you must have the "utilsSQLite.java" program in the same space to call functions.
+Once "createDatabase.java" has been executed there will be in its same folder a document "databaseIndustrial.db", with the user mentioned above.
+
+B. Server API that connects to the app
+We have a "Server.java" class that upon receiving a message will compare whether we should send components or a commit. To send the confirmation we will receive a string from the application
+of text coded in a certain way, the server will extract the necessary components and compare the credentials sent with the database, if it finds a user with these
+credentials will make a broadcast that says that everything is fine to start the application, if not it will say that there is an error and will cut the connection.
