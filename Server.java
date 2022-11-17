@@ -19,10 +19,15 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.password4j.Password;
 
 
 public class Server extends WebSocketServer {
-        private Connection connDB;
+        private Connection connDBUser;
+        private Connection connDBSalt;
+        private Connection connDBPepper;
         private ArrayList<Switch> switches;
         private ArrayList<Slider> sliders;
         private ArrayList<Dropdown> comboBoxes;
@@ -75,8 +80,12 @@ public class Server extends WebSocketServer {
             setConnectionLostTimeout(0);
             setConnectionLostTimeout(100);
             String basePath = System.getProperty("user.dir") + File.separator;
-            String filePath = basePath + "databaseIndustrial.db";
-            connDB=UtilsSQLite.connect(filePath);
+            String filePath1 = basePath + "databaseIndustrialUser.db";
+            String filePath2 = basePath + "databaseIndustrialSalt.db";
+            String filePath3 = basePath + "databaseIndustrialPepper.db";
+            connDBUser=UtilsSQLite.connect(filePath1);
+            connDBSalt=UtilsSQLite.connect(filePath2);
+            connDBSalt=UtilsSQLite.connect(filePath3);
         }
         @Override public void onMessage(WebSocket conn, String message) {
             //Accions a fer quan es reben dades d'una conexio
@@ -126,7 +135,24 @@ public class Server extends WebSocketServer {
                 }
                 //Gson gson = new Gson();
                 //User user = gson.fromJson(message, User.class);
-                ResultSet rs = UtilsSQLite.querySelect(connDB, "SELECT * FROM user WHERE name='"+userData[1]+"' and password='"+userData[2]+"';");
+                ResultSet rsId = UtilsSQLite.querySelect(connDBUser, "SELECT id FROM user WHERE name='"+userData[1]+"';");
+                ResultSet rsSalt=null;
+                ResultSet rsPepper=null;
+                try {
+                    rsSalt = UtilsSQLite.querySelect(connDBSalt,"SELECT * FROM salt WHERE id= "+rsId.getInt("id")+";");
+                    rsPepper = UtilsSQLite.querySelect(connDBPepper,"SELECT * FROM pepper WHERE id= "+rsId.getInt("id")+";"); 
+                } catch (SQLException e2) {
+                    // TODO Auto-generated catch block
+                    e2.printStackTrace();
+                }
+                String hashComp="";
+                try {
+                    hashComp = Password.hash(userData[2]).addSalt(rsSalt.getString("salt")).addPepper(rsPepper.getString("pepper")).withArgon2().getResult();
+                } catch (SQLException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                ResultSet rs = UtilsSQLite.querySelect(connDBUser, "SELECT * FROM user WHERE name='"+userData[1]+"' and hash='"+hashComp+"';");
                 try {
                     if(rs.getString("name")!=null){
                         System.out.println("OK correct user");
