@@ -152,6 +152,7 @@ public class Frame extends JFrame {
 			xml.loadJToggleButtons(togglebutton_panel);
 			xml.loadJSliders(slider_panel);
 			xml.loadJDropdown(dropdown_panel);
+			xml.loadSensor(sensor_panel);
 		}
         else {
         	System.out.println("Error: The file needs to be a .xml");

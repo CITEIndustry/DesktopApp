@@ -9,7 +9,7 @@ public class Main extends JFrame {
 	public static ArrayList<Switch> toggleButtons;
 	public static ArrayList<Slider> sliders;
 	public static ArrayList<Dropdown> dropdowns;
-	public static ArrayList<JTextArea> sensor;
+	public static ArrayList<Sensor> sensors;
 	/**
 	 * Launch the application.
 	 */

@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
 import java.util.ArrayList;
@@ -6,6 +7,7 @@ import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,6 +26,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.password4j.SecureString;
 
 public class XmlReader {
 	static Document doc;
@@ -123,6 +127,39 @@ public class XmlReader {
 		}
 	}
 
+	public void loadSensor(JPanel sensor_panel){
+		Main.sensors = new ArrayList<Sensor>();
+		NodeList list =	doc.getElementsByTagName("sensor");
+		for (int i = 0; i < list.getLength(); i++) {
+			Node node = list.item(i);
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element elm = (Element) node;
+				JTextArea sensor = new JTextArea();
+				int id = Integer.valueOf(elm.getAttribute("id"));
+				String units = String.valueOf(elm.getAttribute("units"));
+				int low = Integer.valueOf(elm.getAttribute("thresholdlow"));
+				int high = Integer.valueOf(elm.getAttribute("thresholdhigh"));
+				sensor.setMaximumSize(new Dimension(100,25));
+				sensor.setText(low+"-"+high+units);
+				sensor.setEditable(false);
+				if(low>=5&&high<=10){
+					sensor.setForeground(Color.GREEN);
+				}
+				else if(low<5){
+					sensor.setForeground(Color.cyan);
+				}
+				else if(high>10){
+					sensor.setForeground(Color.RED);
+				}
+				sensor.setBackground(Color.LIGHT_GRAY);
+				Main.sensors.add(new Sensor(id,units,low,high));
+				sensor.setAlignmentX(Frame.CENTER_ALIGNMENT);
+				//sensor_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+				sensor_panel.add(sensor);
+			}
+			sensor_panel.repaint();
+		}
+	}
 	public void guardarXML(String path) {
 		try {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();

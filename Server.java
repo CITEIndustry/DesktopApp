@@ -136,39 +136,45 @@ public class Server extends WebSocketServer {
                 //Gson gson = new Gson();
                 //User user = gson.fromJson(message, User.class);
                 ResultSet rsId = UtilsSQLite.querySelect(connDBUser, "SELECT id FROM user WHERE name='"+userData[1]+"';");
-                ResultSet rsSalt=null;
-                ResultSet rsPepper=null;
-                try {
-                    rsSalt = UtilsSQLite.querySelect(connDBSalt,"SELECT * FROM salt WHERE id= "+rsId.getInt("id")+";");
-                    rsPepper = UtilsSQLite.querySelect(connDBPepper,"SELECT * FROM pepper WHERE id= "+rsId.getInt("id")+";"); 
-                } catch (SQLException e2) {
-                    // TODO Auto-generated catch block
-                    e2.printStackTrace();
+                if(rsId==null){
+                    System.out.println("ERROR incorrect user");
+                    this.broadcast("message::ERROR");
                 }
-                String hashComp="";
-                try {
-                    hashComp = Password.hash(userData[2]).addSalt(rsSalt.getString("salt")).addPepper(rsPepper.getString("pepper")).withArgon2().getResult();
-                } catch (SQLException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
+                else{
+                    ResultSet rsSalt=null;
+                    ResultSet rsPepper=null;
+                    try {
+                        rsSalt = UtilsSQLite.querySelect(connDBSalt,"SELECT * FROM salt WHERE id= "+rsId.getInt("id")+";");
+                        rsPepper = UtilsSQLite.querySelect(connDBPepper,"SELECT * FROM pepper WHERE id= "+rsId.getInt("id")+";"); 
+                    } catch (SQLException e2) {
+                        // TODO Auto-generated catch block
+                        e2.printStackTrace();
+                    }
+                    String hashComp="";
+                    try {
+                        hashComp = Password.hash(userData[2]).addSalt(rsSalt.getString("saltString")).addPepper(rsPepper.getString("pepperString")).withArgon2().getResult();
+                    } catch (SQLException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                    ResultSet rs = UtilsSQLite.querySelect(connDBUser, "SELECT * FROM user WHERE name='"+userData[1]+"' and hash='"+hashComp+"';");
+                    try {
+                        if(rs.getString("name")!=null){
+                            System.out.println("OK correct user");
+                            System.out.println("User "+userData[1]+" Correct");
+                            this.broadcast("message::OK");
+                            
+                        }
+                        else{
+                            System.out.println("ERROR incorrect user");
+                            this.broadcast("message::ERROR");
+                            //this.stop(1000);
+                        }
+                    } catch (SQLException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } 
                 }
-                ResultSet rs = UtilsSQLite.querySelect(connDBUser, "SELECT * FROM user WHERE name='"+userData[1]+"' and hash='"+hashComp+"';");
-                try {
-                    if(rs.getString("name")!=null){
-                        System.out.println("OK correct user");
-                        System.out.println("User "+userData[1]+" Correct");
-                        this.broadcast("message::OK");
-                        
-                    }
-                    else{
-                        System.out.println("ERROR incorrect user");
-                        this.broadcast("message::ERROR");
-                        //this.stop(1000);
-                    }
-                } catch (SQLException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } 
             }
         }
         /*@Override public void onMessage(WebSocket conn, ByteBuffer message) {
