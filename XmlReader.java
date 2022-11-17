@@ -82,7 +82,7 @@ public class XmlReader {
 				int min = Integer.valueOf(elm.getAttribute("min"));
 				int max = Integer.valueOf(elm.getAttribute("max"));
 				int step = Integer.valueOf(elm.getAttribute("step"));
-				slider.setMaximumSize(new Dimension((int) slider.getPreferredSize().getWidth(), 30));
+				slider.setMaximumSize(new Dimension((int) slider.getPreferredSize().getWidth(), 40));
 				slider.setSnapToTicks(true);
 				slider.setPaintTicks(true);
 				slider.setMinimum(min);
@@ -90,6 +90,7 @@ public class XmlReader {
 				slider.setMinorTickSpacing(step);
 				slider.setMajorTickSpacing(step);
 				slider.setValue(initialValue);
+				slider.setPaintLabels(true);
 				Main.sliders.add(new Slider(Integer.parseInt(elm.getAttribute("id")),Integer.parseInt(elm.getAttribute("default")),Integer.parseInt(elm.getAttribute("min")),Integer.parseInt(elm.getAttribute("max")),Integer.parseInt(elm.getAttribute("step"))));
 				slider.setAlignmentX(Frame.CENTER_ALIGNMENT);
 				slider_panel.add(Box.createRigidArea(new Dimension(0, 10)));

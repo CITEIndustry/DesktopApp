@@ -22,7 +22,7 @@ public class Main extends JFrame {
 					//Main frame = new Main();
 					//frame.setVisible(true);
 					
-					Server server=new Server(8888,toggleButtons,sliders,dropdowns);
+					Server server=new Server(8888,toggleButtons,sliders,dropdowns,sensors);
 					server.run();
 					if(frame.isActive()==false){
 						server.stop();

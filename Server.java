@@ -37,7 +37,7 @@ public class Server extends WebSocketServer {
         public Server(int port) throws UnknownHostException {
             super(new InetSocketAddress(port));
         }
-        public Server(int port,ArrayList<Switch> switches,ArrayList<Slider> sliders, ArrayList<Dropdown> comboBoxes) throws UnknownHostException {
+        public Server(int port,ArrayList<Switch> switches,ArrayList<Slider> sliders, ArrayList<Dropdown> comboBoxes,ArrayList<Sensor> sensors) throws UnknownHostException {
             super(new InetSocketAddress(port));
             this.switches=switches;
             this.sliders=sliders;
@@ -93,6 +93,7 @@ public class Server extends WebSocketServer {
                 String switchText="";
                 String sliderText="";
                 String comboText="";
+                String sensorText="";
                 if(Main.toggleButtons!=null||Main.sliders!=null||Main.dropdowns!=null){
                     for(int i=0;i<Main.toggleButtons.size();i++){
                         switchText="switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal();
@@ -108,9 +109,13 @@ public class Server extends WebSocketServer {
                     for(int i=0;i<Main.dropdowns.size();i++){
                         comboText="dropdown::"+Main.dropdowns.get(i).getId()+"::"+Main.dropdowns.get(i).getDefaultVal()+"::";
                         for(int j=0;j<Main.dropdowns.get(i).getOption().length;j++){
-                                comboText=comboText+Main.dropdowns.get(i).getOption()[j][0]+":"+Main.dropdowns.get(i).getOption()[j][1]+"/";
+                            comboText=comboText+Main.dropdowns.get(i).getOption()[j][0]+":"+Main.dropdowns.get(i).getOption()[j][1]+"/";
                         }
                         this.broadcast(comboText);
+                    }
+                    for(int i=0;i<Main.sensors.size();i++){
+                        sensorText="sensor::"+Main.sensors.get(i).getId()+"::"+Main.sensors.get(i).getUnits()+"::"+Main.sensors.get(i).getThresholdlow()
+                        +"::"+Main.sensors.get(i).getThresholdhight();
                     }
                     this.broadcast("Send");
                 }
