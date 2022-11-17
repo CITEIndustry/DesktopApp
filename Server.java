@@ -13,16 +13,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
-import javax.swing.*;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 
 public class Server extends WebSocketServer {
@@ -88,7 +84,7 @@ public class Server extends WebSocketServer {
                 String switchText="";
                 String sliderText="";
                 String comboText="";
-                if(Main.toggleButtons!=null||Main.sliders!=null||Main.dropdown!=null){
+                if(Main.toggleButtons!=null||Main.sliders!=null||Main.dropdowns!=null){
                     for(int i=0;i<Main.toggleButtons.size();i++){
                         switchText="switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal();
                         this.broadcast(switchText);
@@ -99,11 +95,11 @@ public class Server extends WebSocketServer {
                         +"::"+Main.sliders.get(i).getMin()+"::"+Main.sliders.get(i).getStep();
                         this.broadcast(sliderText);
                     }
-                    System.out.println(Main.dropdown.size());
-                    for(int i=0;i<Main.dropdown.size();i++){
-                        comboText="dropdown::"+Main.dropdown.get(i).getId()+"::"+Main.dropdown.get(i).getDefaultVal()+"::";
-                        for(int j=0;j<Main.dropdown.get(i).getOption().length;j++){
-                                comboText=comboText+Main.dropdown.get(i).getOption()[j][0]+":"+Main.dropdown.get(i).getOption()[j][1]+"/";
+                    System.out.println(Main.dropdowns.size());
+                    for(int i=0;i<Main.dropdowns.size();i++){
+                        comboText="dropdown::"+Main.dropdowns.get(i).getId()+"::"+Main.dropdowns.get(i).getDefaultVal()+"::";
+                        for(int j=0;j<Main.dropdowns.get(i).getOption().length;j++){
+                                comboText=comboText+Main.dropdowns.get(i).getOption()[j][0]+":"+Main.dropdowns.get(i).getOption()[j][1]+"/";
                         }
                         this.broadcast(comboText);
                     }
