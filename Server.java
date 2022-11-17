@@ -85,7 +85,7 @@ public class Server extends WebSocketServer {
             String filePath3 = basePath + "databaseIndustrialPepper.db";
             connDBUser=UtilsSQLite.connect(filePath1);
             connDBSalt=UtilsSQLite.connect(filePath2);
-            connDBSalt=UtilsSQLite.connect(filePath3);
+            connDBPepper=UtilsSQLite.connect(filePath3);
         }
         @Override public void onMessage(WebSocket conn, String message) {
             //Accions a fer quan es reben dades d'una conexio
