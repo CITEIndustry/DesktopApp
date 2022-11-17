@@ -1,9 +1,14 @@
+import java.awt.Dimension;
 import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 
+import javax.swing.Box;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JToggleButton;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -16,32 +21,109 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 public class XmlReader {
 	static Document doc;
+	DocumentBuilderFactory dbFactory;
+	DocumentBuilder dBuilder;
 
-	static public Document llegirXML(String path) {
-		doc = null;
+
+	public XmlReader(String path){
 		try {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			doc = dBuilder.parse(path);
-			NodeList list = doc.getChildNodes();
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+			File file = new File(path);
+			dbFactory = DocumentBuilderFactory.newInstance();
+			dBuilder = dbFactory.newDocumentBuilder();
+			doc = dBuilder.parse(file);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		return doc;
 	}
 
-	static public void guardarXML(String path) {
+	public void loadJToggleButtons(JPanel togglebutton_panel) {
+		Main.toggleButtons = new ArrayList<Switch>();
+		NodeList list = doc.getElementsByTagName("switch");
+		for (int i = 0; i < list.getLength(); i++) {
+			Node node = list.item(i);
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element elm = (Element) node;
+				JToggleButton button = new JToggleButton();
+				button.setText(elm.getTextContent());
+				if (elm.getAttribute("default").equals("on")) {
+					button.setSelected(true);
+				}
+				Main.toggleButtons.add(new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getAttribute("default")));
+				button.setAlignmentX(Frame.CENTER_ALIGNMENT);
+				togglebutton_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+				togglebutton_panel.add(button);
+			} 
+		}
+		togglebutton_panel.repaint();
+		
+	}
+
+	public void loadJSliders(JPanel slider_panel) {
+		Main.sliders = new ArrayList<Slider>();
+		NodeList list =	doc.getElementsByTagName("slider");
+		for (int i = 0; i < list.getLength(); i++) {
+			Node node = list.item(i);
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element elm = (Element) node;
+				JSlider slider = new JSlider();
+				int id = Integer.valueOf(elm.getAttribute("id"));
+				int initialValue = Integer.valueOf(elm.getAttribute("default"));
+				int min = Integer.valueOf(elm.getAttribute("min"));
+				int max = Integer.valueOf(elm.getAttribute("max"));
+				int step = Integer.valueOf(elm.getAttribute("step"));
+				slider.setMaximumSize(new Dimension((int) slider.getPreferredSize().getWidth(), 30));
+				slider.setSnapToTicks(true);
+				slider.setPaintTicks(true);
+				slider.setMinimum(min);
+				slider.setMaximum(max);
+				slider.setMinorTickSpacing(step);
+				slider.setMajorTickSpacing(step);
+				slider.setValue(initialValue);
+				Main.sliders.add(new Slider(Integer.parseInt(elm.getAttribute("id")),Integer.parseInt(elm.getAttribute("default")),Integer.parseInt(elm.getAttribute("min")),Integer.parseInt(elm.getAttribute("max")),Integer.parseInt(elm.getAttribute("step"))));
+				slider.setAlignmentX(Frame.CENTER_ALIGNMENT);
+				slider_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+				slider_panel.add(slider);
+			}
+		}
+	}
+
+	public void loadJDropdown(JPanel dropdown_panel) {
+		Main.dropdowns = new ArrayList<Dropdown>();
+		NodeList list =	doc.getElementsByTagName("dropdown");
+		for (int i = 0; i < list.getLength(); i++) {
+			JComboBox combo = new JComboBox();
+			combo.setMaximumSize(new Dimension(100,25));
+			Node node = list.item(i);
+			combo.setBounds(100, 200, 100, 200);
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element elm = (Element) node;
+				NodeList options = elm.getElementsByTagName("option");
+				Dropdown drw = new Dropdown(Integer.parseInt(elm.getAttribute("id")),Integer.parseInt(elm.getAttribute("default")),options.getLength());
+				for (int j = 0; j < options.getLength(); j++) {
+					Node nodeoption = options.item(j);
+					if (nodeoption.getNodeType() == Node.ELEMENT_NODE) {
+						Element opc = (Element) nodeoption;
+						combo.addItem(opc.getTextContent());
+						drw.setOption(j, 0, opc.getAttribute("value"));
+						drw.setOption(j, 1, opc.getTextContent());
+					}
+					
+				}
+				
+				Main.dropdowns.add(drw);
+			}
+			dropdown_panel.add(combo);
+		}
+	}
+
+	public void guardarXML(String path) {
 		try {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();

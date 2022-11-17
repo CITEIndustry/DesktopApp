@@ -6,6 +6,7 @@
             <option value="2">Label 2</option>
             <option value="3">Label 3</option>
             <option value="4">Label 4</option>
+            <option value="5">Label 5</option>
         </dropdown>
         <sensor id="3" units="ºC" thresholdlow="5" thresholdhigh="10">Label</sensor>
     </controls>
