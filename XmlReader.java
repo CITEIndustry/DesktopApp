@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.Box;
 import javax.swing.JComboBox;
@@ -55,7 +56,7 @@ public class XmlReader {
 
 	public void loadJToggleButtons(JPanel togglebutton_panel) {
 		togglebutton_panel.removeAll();
-		Main.toggleButtons = new ArrayList<Switch>();
+		Main.toggleButtons = new HashMap<Integer, Switch>();
 		NodeList list = doc.getElementsByTagName("switch");
 		for (int i = 0; i < list.getLength(); i++) {
 			Node node = list.item(i);
@@ -66,7 +67,7 @@ public class XmlReader {
 				if (elm.getAttribute("default").equals("on")) {
 					button.setSelected(true);
 				}
-				Main.toggleButtons.add(new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getAttribute("default")));
+				Main.toggleButtons.put(Integer.parseInt(elm.getAttribute("id")),new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getAttribute("default")));
 				button.setAlignmentX(Frame.CENTER_ALIGNMENT);
 				togglebutton_panel.add(Box.createRigidArea(new Dimension(0, 10)));
 				togglebutton_panel.add(button);
@@ -76,7 +77,7 @@ public class XmlReader {
 
 	public void loadJSliders(JPanel slider_panel) {
 		slider_panel.removeAll();
-		Main.sliders = new ArrayList<Slider>();
+		Main.sliders = new HashMap<Integer, Slider>();
 		NodeList list =	doc.getElementsByTagName("slider");
 		if (list.getLength() != 0){
 			//  Puedes continuar.
@@ -126,7 +127,7 @@ public class XmlReader {
 
 	public void loadJDropdown(JPanel dropdown_panel) {
 		dropdown_panel.removeAll();
-		Main.dropdowns = new ArrayList<Dropdown>();
+		Main.dropdowns = new HashMap<Integer, Dropdown>();
 		NodeList list =	doc.getElementsByTagName("dropdown");
 		if (list.getLength() != 0){
 			//  Puedes continuar.
@@ -152,7 +153,7 @@ public class XmlReader {
 					
 					Main.dropdowns.add(drw);
 				}
-				dropdown_panel.add(combo);
+				dropdown_panel.put(Integer.parseInt(elm.getAttribute("id")),combo);
 			}
 		}else{
 			//  Uno de los objetos esta nullo.
@@ -163,7 +164,7 @@ public class XmlReader {
 
 	public void loadSensor(JPanel sensor_panel){
 		sensor_panel.removeAll();
-		Main.sensors = new ArrayList<Sensor>();
+		Main.sensors = new HashMap<Integer, Sensor>();
 		NodeList list =	doc.getElementsByTagName("sensor");
 		if (list.getLength() != 0){
 			//  Puedes continuar.
@@ -189,7 +190,7 @@ public class XmlReader {
 					else if(randomValue>high){
 						sensor.setBackground(Color.RED);
 					}
-					Main.sensors.add(new Sensor(id,units,low,high));
+					Main.sensors.put(id,new Sensor(id,units,low,high));
 					sensor.setAlignmentX(Frame.CENTER_ALIGNMENT);
 					//sensor_panel.add(Box.createRigidArea(new Dimension(0, 10)));
 					sensor_panel.add(sensor);

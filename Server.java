@@ -13,7 +13,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
+import java.util.Map;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -34,10 +34,8 @@ public class Server extends WebSocketServer {
         private ArrayList<String> sensors;
         
         //private ArrayList<JS
+
         public Server(int port) throws UnknownHostException {
-            super(new InetSocketAddress(port));
-        }
-        public Server(int port,ArrayList<Switch> switches,ArrayList<Slider> sliders, ArrayList<Dropdown> comboBoxes,ArrayList<Sensor> sensors) throws UnknownHostException {
             super(new InetSocketAddress(port));
             this.switches=switches;
             this.sliders=sliders;
@@ -95,25 +93,25 @@ public class Server extends WebSocketServer {
                 String comboText="";
                 String sensorText="";
                 if(Main.toggleButtons!=null||Main.sliders!=null||Main.dropdowns!=null){
-                    for(int i=0;i<Main.toggleButtons.size();i++){
+                    for(int i : Main.toggleButtons.keySet()){
                         switchText="switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal();
                         this.broadcast(switchText);
                         System.out.println("frameeee");
                     }
-                    for(int i=0;i<Main.sliders.size();i++){
+                    for(int i : Main.sliders.keySet()){
                         sliderText="slider::"+Main.sliders.get(i).getId()+"::"+Main.sliders.get(i).getDefaultVal()+"::"+Main.sliders.get(i).getMax()
                         +"::"+Main.sliders.get(i).getMin()+"::"+Main.sliders.get(i).getStep();
                         this.broadcast(sliderText);
                     }
                     System.out.println(Main.dropdowns.size());
-                    for(int i=0;i<Main.dropdowns.size();i++){
+                    for(int i : Main.dropdowns.keySet()){
                         comboText="dropdown::"+Main.dropdowns.get(i).getId()+"::"+Main.dropdowns.get(i).getDefaultVal()+"::";
                         for(int j=0;j<Main.dropdowns.get(i).getOption().length;j++){
                             comboText=comboText+Main.dropdowns.get(i).getOption()[j][0]+":"+Main.dropdowns.get(i).getOption()[j][1]+"/";
                         }
                         this.broadcast(comboText);
                     }
-                    for(int i=0;i<Main.sensors.size();i++){
+                    for(int i : Main.sensors.keySet()){
                         sensorText="sensor::"+Main.sensors.get(i).getId()+"::"+Main.sensors.get(i).getUnits()+"::"+Main.sensors.get(i).getThresholdlow()
                         +"::"+Main.sensors.get(i).getThresholdhight();
                         this.broadcast(sensorText);
