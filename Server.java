@@ -252,5 +252,4 @@ public class Server extends WebSocketServer {
             } catch (IOException e) { e.printStackTrace(); }
             return result;
         }
-        
 }

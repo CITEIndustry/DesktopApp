@@ -1,10 +1,13 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
+import java.lang.foreign.GroupLayout;
 import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
@@ -61,9 +64,13 @@ public class XmlReader {
 				if (elm.getAttribute("default").equals("on")) {
 					button.setSelected(true);
 				}
+				
+				JLabel label = new JLabel(elm.getTextContent());
 				Main.toggleButtons.add(new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getAttribute("default")));
 				button.setAlignmentX(Frame.CENTER_ALIGNMENT);
+				label.setAlignmentX(Frame.CENTER_ALIGNMENT);
 				togglebutton_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+				togglebutton_panel.add(label);
 				togglebutton_panel.add(button);
 			} 
 		}
@@ -104,12 +111,14 @@ public class XmlReader {
 						for(Slider s:Main.sliders){
 							if(s.getId()==Integer.parseInt(elm.getAttribute("id"))){
 								s.setDefaultVal(Integer.parseInt(elm.getAttribute("default")));;
-								
 							}
 						}
 					}
 
 				});
+				JLabel label = new JLabel(elm.getTextContent());
+				label.setAlignmentX(Frame.CENTER_ALIGNMENT);
+				slider_panel.add(label);
 				slider_panel.add(slider);
 			}
 		}
@@ -150,6 +159,7 @@ public class XmlReader {
 		for (int i = 0; i < list.getLength(); i++) {
 			Node node = list.item(i);
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				int randomValue = (int) (Math.random()*20-1);
 				Element elm = (Element) node;
 				JTextArea sensor = new JTextArea();
 				int id = Integer.valueOf(elm.getAttribute("id"));
@@ -157,15 +167,15 @@ public class XmlReader {
 				int low = Integer.valueOf(elm.getAttribute("thresholdlow"));
 				int high = Integer.valueOf(elm.getAttribute("thresholdhigh"));
 				sensor.setMaximumSize(new Dimension(100,25));
-				sensor.setText(low+"-"+high+units);
+				sensor.setText(randomValue+units);
 				sensor.setEditable(false);
-				if(low>=5&&high<=10){
+				if(randomValue>=low&&randomValue<=high){
 					sensor.setForeground(Color.GREEN);
 				}
-				else if(low<5){
+				else if(randomValue<low){
 					sensor.setForeground(Color.cyan);
 				}
-				else if(high>10){
+				else if(randomValue>high){
 					sensor.setForeground(Color.RED);
 				}
 				sensor.setBackground(Color.LIGHT_GRAY);
