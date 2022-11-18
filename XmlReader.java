@@ -1,12 +1,11 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
+import java.lang.foreign.GroupLayout;
 import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
@@ -57,28 +56,20 @@ public class XmlReader {
 		togglebutton_panel.removeAll();
 		Main.toggleButtons = new ArrayList<Switch>();
 		NodeList list = doc.getElementsByTagName("switch");
-		if (list.getLength() != 0){
-			//  Puedes continuar.
-			for (int i = 0; i < list.getLength(); i++) {
-				Node node = list.item(i);
-				if (node.getNodeType() == Node.ELEMENT_NODE) {
-					Element elm = (Element) node;
-					JToggleButton button = new JToggleButton();
-					button.setText(elm.getTextContent());
-					if (elm.getAttribute("default").equals("on")) {
-						button.setSelected(true);
-					}
-					Main.toggleButtons.add(new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getAttribute("default")));
-					button.setAlignmentX(Frame.CENTER_ALIGNMENT);
-					togglebutton_panel.add(Box.createRigidArea(new Dimension(0, 10)));
-					togglebutton_panel.add(button);
-				} 
-			}
-			togglebutton_panel.repaint();
-		}else{
-			//  Uno de los objetos esta nullo.
-			// CREAR UN POPUP CON EL ERROR.
-			showError("There is a problem in the switch at the .xml");
+		for (int i = 0; i < list.getLength(); i++) {
+			Node node = list.item(i);
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element elm = (Element) node;
+				JToggleButton button = new JToggleButton();
+				button.setText(elm.getTextContent());
+				if (elm.getAttribute("default").equals("on")) {
+					button.setSelected(true);
+				}
+				Main.toggleButtons.add(new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getAttribute("default")));
+				button.setAlignmentX(Frame.CENTER_ALIGNMENT);
+				togglebutton_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+				togglebutton_panel.add(button);
+			} 
 		}
 	}
 
@@ -121,10 +112,10 @@ public class XmlReader {
 								}
 							}
 						}
-	
-					});
-					slider_panel.add(slider);
-				}
+					}
+
+				});
+				slider_panel.add(slider);
 			}
 		}else{
 			//  Uno de los objetos esta nullo.
@@ -179,6 +170,7 @@ public class XmlReader {
 			for (int i = 0; i < list.getLength(); i++) {
 				Node node = list.item(i);
 				if (node.getNodeType() == Node.ELEMENT_NODE) {
+				int randomValue = (int) (Math.random()*20-1);
 					Element elm = (Element) node;
 					JTextArea sensor = new JTextArea();
 					int id = Integer.valueOf(elm.getAttribute("id"));
@@ -186,15 +178,15 @@ public class XmlReader {
 					int low = Integer.valueOf(elm.getAttribute("thresholdlow"));
 					int high = Integer.valueOf(elm.getAttribute("thresholdhigh"));
 					sensor.setMaximumSize(new Dimension(100,25));
-					sensor.setText(low+"-"+high+units);
+					sensor.setText(randomValue+units);
 					sensor.setEditable(false);
-					if(low>=5&&high<=10){
+					if(randomValue>=low&&randomValue<=high){
 						sensor.setBackground(Color.GREEN);
 					}
-					else if(low<5){
+					else if(randomValue<low){
 						sensor.setBackground(Color.cyan);
 					}
-					else if(high>10){
+					else if(randomValue>high){
 						sensor.setBackground(Color.RED);
 					}
 					Main.sensors.add(new Sensor(id,units,low,high));
