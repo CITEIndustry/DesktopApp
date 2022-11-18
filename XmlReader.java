@@ -1,11 +1,12 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
-import java.lang.foreign.GroupLayout;
 import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
@@ -112,10 +113,9 @@ public class XmlReader {
 								}
 							}
 						}
-					}
-
-				});
-				slider_panel.add(slider);
+					});
+					slider_panel.add(slider);
+				}
 			}
 		}else{
 			//  Uno de los objetos esta nullo.
