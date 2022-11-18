@@ -147,7 +147,7 @@ public class Frame extends JFrame {
 		File selectedFile = filechooser.getSelectedFile();
 		if(selectedFile.toString().contains(".xml")) {
 			filePath = filechooser.getSelectedFile().getAbsolutePath();
-            xml = new XmlReader(filePath);
+            xml = new XmlReader(filePath, this);
 			System.out.println(filePath);
 			xml.loadJToggleButtons(togglebutton_panel);
 			xml.loadJSliders(slider_panel);
@@ -160,8 +160,6 @@ public class Frame extends JFrame {
 		setVisible(true);
 	}
 
-    public void showError(String message){
-        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
-    }
+    
     
 }
