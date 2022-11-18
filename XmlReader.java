@@ -58,20 +58,24 @@ public class XmlReader {
 		togglebutton_panel.removeAll();
 		Main.toggleButtons = new HashMap<Integer, Switch>();
 		NodeList list = doc.getElementsByTagName("switch");
-		for (int i = 0; i < list.getLength(); i++) {
-			Node node = list.item(i);
-			if (node.getNodeType() == Node.ELEMENT_NODE) {
-				Element elm = (Element) node;
-				JToggleButton button = new JToggleButton();
-				button.setText(elm.getTextContent());
-				if (elm.getAttribute("default").equals("on")) {
-					button.setSelected(true);
-				}
-				Main.toggleButtons.put(Integer.parseInt(elm.getAttribute("id")),new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getAttribute("default")));
-				button.setAlignmentX(Frame.CENTER_ALIGNMENT);
-				togglebutton_panel.add(Box.createRigidArea(new Dimension(0, 10)));
-				togglebutton_panel.add(button);
-			} 
+		if (list.getLength() != 0){
+			for (int i = 0; i < list.getLength(); i++) {
+				Node node = list.item(i);
+				if (node.getNodeType() == Node.ELEMENT_NODE) {
+					Element elm = (Element) node;
+					JToggleButton button = new JToggleButton();
+					button.setText(elm.getTextContent());
+					if (elm.getAttribute("default").equals("on")) {
+						button.setSelected(true);
+					}
+					Main.toggleButtons.put(Integer.parseInt(elm.getAttribute("id")),new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getAttribute("default")));
+					button.setAlignmentX(Frame.CENTER_ALIGNMENT);
+					togglebutton_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+					togglebutton_panel.add(button);
+				} 
+			}
+		}else{
+			showError("There is a problem in the dropdown at the .xml");
 		}
 	}
 
@@ -100,7 +104,7 @@ public class XmlReader {
 					slider.setMajorTickSpacing(step);
 					slider.setValue(initialValue);
 					slider.setPaintLabels(true);
-					Main.sliders.add(new Slider(Integer.parseInt(elm.getAttribute("id")),Integer.parseInt(elm.getAttribute("default")),Integer.parseInt(elm.getAttribute("min")),Integer.parseInt(elm.getAttribute("max")),Integer.parseInt(elm.getAttribute("step"))));
+					Main.sliders.put(Integer.parseInt(elm.getAttribute("id")),new Slider(Integer.parseInt(elm.getAttribute("id")),Integer.parseInt(elm.getAttribute("default")),Integer.parseInt(elm.getAttribute("min")),Integer.parseInt(elm.getAttribute("max")),Integer.parseInt(elm.getAttribute("step"))));
 					slider.setAlignmentX(Frame.CENTER_ALIGNMENT);
 					slider_panel.add(Box.createRigidArea(new Dimension(0, 10)));
 					slider.addChangeListener(new ChangeListener() {
@@ -108,12 +112,8 @@ public class XmlReader {
 						@Override
 						public void stateChanged(ChangeEvent e) {
 							// TODO Auto-generated method stub
-							for(Slider s:Main.sliders){
-								if(s.getId()==Integer.parseInt(elm.getAttribute("id"))){
-									s.setDefaultVal(Integer.parseInt(elm.getAttribute("default")));;
-								}
+							Main.sliders.get(id).setDefaultVal(slider.getValue());
 							}
-						}
 					});
 					slider_panel.add(slider);
 				}
@@ -151,9 +151,9 @@ public class XmlReader {
 						
 					}
 					
-					Main.dropdowns.add(drw);
+					Main.dropdowns.put(Integer.parseInt(elm.getAttribute("id")),drw);
 				}
-				dropdown_panel.put(Integer.parseInt(elm.getAttribute("id")),combo);
+				dropdown_panel.add(combo);
 			}
 		}else{
 			//  Uno de los objetos esta nullo.

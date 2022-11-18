@@ -9,7 +9,7 @@
             <option value="5">Label 5</option>
         </dropdown>
         <sensor id="3" units="ºC" thresholdlow="5" thresholdhigh="10">Label</sensor>
-        <sensor id="3" units="ºC" thresholdlow="0" thresholdhigh="4">Label</sensor>
-        <sensor id="3" units="ºC" thresholdlow="11" thresholdhigh="15">Label</sensor>
+        <sensor id="4" units="ºC" thresholdlow="0" thresholdhigh="4">Label</sensor>
+        <sensor id="5" units="ºC" thresholdlow="11" thresholdhigh="15">Label</sensor>
     </controls>
 </root>
