@@ -13,6 +13,7 @@ public class Main extends JFrame {
 	public static Map<Integer, Slider> sliders;
 	public static Map<Integer, Dropdown> dropdowns;
 	public static Map<Integer, Sensor> sensors;
+	public static Server server;
 	//public static ArrayList<Switch> toggleButtons;
 	//public static ArrayList<Slider> sliders;
 	//public static ArrayList<Dropdown> dropdowns;
@@ -30,7 +31,7 @@ public class Main extends JFrame {
 					//Main frame = new Main();
 					//frame.setVisible(true);
 					
-					Server server=new Server(8888);
+					server=new Server(8888);
 					server.run();
 					if(frame.isActive()==false){
 						server.stop();

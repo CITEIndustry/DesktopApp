@@ -1,5 +1,7 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +9,7 @@ import java.util.HashMap;
 import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -14,6 +17,7 @@ import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent.EventType;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -68,8 +72,25 @@ public class XmlReader {
 					if (elm.getAttribute("default").equals("on")) {
 						button.setSelected(true);
 					}
+					JLabel label = new JLabel(elm.getTextContent());
+					label.setAlignmentX(Frame.CENTER_ALIGNMENT);
+					togglebutton_panel.add(label);
 					Main.toggleButtons.put(Integer.parseInt(elm.getAttribute("id")),new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getAttribute("default")));
 					button.setAlignmentX(Frame.CENTER_ALIGNMENT);
+					button.addChangeListener(new ChangeListener() {
+	
+						@Override
+						public void stateChanged(ChangeEvent e) {
+							// TODO Auto-generated method stub
+							if(button.isSelected()){
+								Main.toggleButtons.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal("on");
+							}
+							else{
+								Main.toggleButtons.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal("off");
+							
+							}
+						}
+					});
 					togglebutton_panel.add(Box.createRigidArea(new Dimension(0, 10)));
 					togglebutton_panel.add(button);
 				} 
@@ -115,6 +136,9 @@ public class XmlReader {
 							Main.sliders.get(id).setDefaultVal(slider.getValue());
 							}
 					});
+					JLabel label = new JLabel(elm.getTextContent());
+					label.setAlignmentX(Frame.CENTER_ALIGNMENT);
+					slider_panel.add(label);
 					slider_panel.add(slider);
 				}
 			}
@@ -153,6 +177,20 @@ public class XmlReader {
 					
 					Main.dropdowns.put(Integer.parseInt(elm.getAttribute("id")),drw);
 				}
+				/*JLabel label = new JLabel(node.getAttribute("label"));
+				label.setAlignmentX(Frame.CENTER_ALIGNMENT);
+				dropdown_panel.add(label);*/
+				combo.addActionListener(new ActionListener(){
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+				}
+					
+				);
 				dropdown_panel.add(combo);
 			}
 		}else{

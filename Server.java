@@ -28,18 +28,11 @@ public class Server extends WebSocketServer {
         private Connection connDBUser;
         private Connection connDBSalt;
         private Connection connDBPepper;
-        private ArrayList<Switch> switches;
-        private ArrayList<Slider> sliders;
-        private ArrayList<Dropdown> comboBoxes;
-        private ArrayList<String> sensors;
         
         //private ArrayList<JS
 
         public Server(int port) throws UnknownHostException {
             super(new InetSocketAddress(port));
-            this.switches=switches;
-            this.sliders=sliders;
-            this.comboBoxes=comboBoxes;
         }
         public Server(InetSocketAddress address) {
             super(address);
