@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -94,6 +96,19 @@ public class XmlReader {
 				Main.sliders.add(new Slider(Integer.parseInt(elm.getAttribute("id")),Integer.parseInt(elm.getAttribute("default")),Integer.parseInt(elm.getAttribute("min")),Integer.parseInt(elm.getAttribute("max")),Integer.parseInt(elm.getAttribute("step"))));
 				slider.setAlignmentX(Frame.CENTER_ALIGNMENT);
 				slider_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+				slider.addChangeListener(new ChangeListener() {
+
+					@Override
+					public void stateChanged(ChangeEvent e) {
+						// TODO Auto-generated method stub
+						for(Slider s:Main.sliders){
+							if(s.getId()==Integer.parseInt(elm.getAttribute("id"))){
+								s.setDefaultVal(Integer.parseInt(elm.getAttribute("default")));;
+							}
+						}
+					}
+
+				});
 				slider_panel.add(slider);
 			}
 		}
