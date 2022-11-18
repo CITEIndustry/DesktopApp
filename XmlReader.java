@@ -104,6 +104,7 @@ public class XmlReader {
 						for(Slider s:Main.sliders){
 							if(s.getId()==Integer.parseInt(elm.getAttribute("id"))){
 								s.setDefaultVal(Integer.parseInt(elm.getAttribute("default")));;
+								
 							}
 						}
 					}
