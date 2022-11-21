@@ -1,12 +1,31 @@
 <root>
     <controls name="block1">
-        <switch id="0" default="on">Label</switch>
-        <slider id="1" default="5" min="0" max="10" step="1">Label</slider>
-        <dropdown id="2" default="1">
-            <option value="2">Label 2</option>
-            <option value="3">Label 3</option>
-            <option value="4">Label 4</option>
+        <switch id="0" default="on">Reception Light</switch>
+        <switch id="1" default="on">Office Light</switch>
+        <switch id="2" default="off">Boilers Light</switch>
+        <slider id="1" default="5" min="0" max="10" step="1">Boiler 1</slider>
+        <slider id="2" default="8" min="0" max="10" step="1">Boiler 2</slider>
+        <slider id="3" default="2" min="0" max="10" step="1">Boiler 3</slider>
+        <dropdown id="2" default="0" label="Boiler 1">
+            <option value="1">Cold</option>
+            <option value="2">Chill</option>
+            <option value="3">Hot</option>
+            <option value="4">Burning</option>
         </dropdown>
-        <sensor id="3" units="ºC" thresholdlow="5" thresholdhigh="10">Label</sensor>
+        <dropdown id="3" default="2" label="Boiler 2">
+            <option value="1">Cold</option>
+            <option value="2">Chill</option>
+            <option value="3">Hot</option>
+            <option value="4">Burning</option>
+        </dropdown>
+        <dropdown id="4" default="1" label="Boiler 3">
+            <option value="1">Cold</option>
+            <option value="2">Chill</option>
+            <option value="3">Hot</option>
+            <option value="4">Burning</option>
+        </dropdown>
+        <sensor id="3" units="ºC" thresholdlow="5" thresholdhigh="10">Boiler 1</sensor>
+        <sensor id="4" units="ºC" thresholdlow="0" thresholdhigh="4">Boiler 2</sensor>
+        <sensor id="5" units="ºC" thresholdlow="11" thresholdhigh="15">Boiler 3</sensor>
     </controls>
 </root>

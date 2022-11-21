@@ -4,13 +4,15 @@ public class Slider {
     private int min;
     private int max;
     private int step;
+    private String label;
 
-    public Slider(int id, int defaultVal, int min, int max, int step) {
+    public Slider(int id, int defaultVal, int min, int max, int step,String label) {
         this.id = id;
         this.defaultVal = defaultVal;
         this.min = min;
         this.max = max;
         this.step = step;
+        this.label = label;
     }
 
     public int getId() {
@@ -52,4 +54,13 @@ public class Slider {
     public void setStep(int step) {
         this.step = step;
     }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+    
 }
