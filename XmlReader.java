@@ -96,6 +96,7 @@ public class XmlReader {
 							}
 						}
 					});
+					Main.switches.put(Integer.parseInt(elm.getAttribute("id")),button);
 					togglebutton_panel.add(Box.createRigidArea(new Dimension(0, 10)));
 					togglebutton_panel.add(button);
 				} 
@@ -139,13 +140,15 @@ public class XmlReader {
 						public void stateChanged(ChangeEvent e) {
 							// TODO Auto-generated method stub
 							Main.sliders.get(id).setDefaultVal(slider.getValue());
+							System.out.println(slider.getValue());
 							String sliderChange="";
 								for(int i : Main.sliders.keySet()){
 									sliderChange="change;;slider::"+Main.sliders.get(i).getId()+"::"+Main.sliders.get(i).getDefaultVal();
-									Main.server.enviaCanvi("sliderChange");
+									Main.server.enviaCanvi(sliderChange);
 								}
 							}
 					});
+					Main.jsliders.put(Integer.parseInt(elm.getAttribute("id")),slider);
 					JLabel label = new JLabel(elm.getTextContent());
 					label.setAlignmentX(Frame.CENTER_ALIGNMENT);
 					slider_panel.add(label);
@@ -186,7 +189,6 @@ public class XmlReader {
 						}
 						
 					}
-					
 					Main.dropdowns.put(Integer.parseInt(elm.getAttribute("id")),drw);
 					combo.addActionListener(new ActionListener(){
 
@@ -204,6 +206,7 @@ public class XmlReader {
 					}
 						
 					);
+					Main.comboBoxes.put(Integer.parseInt(elm.getAttribute("id")),combo);
 				}
 				/*JLabel label = new JLabel(node.getAttribute("label"));
 				label.setAlignmentX(Frame.CENTER_ALIGNMENT);
@@ -253,6 +256,7 @@ public class XmlReader {
 					sensor_panel.add(label);
 					sensor.setAlignmentX(Frame.CENTER_ALIGNMENT);
 					//sensor_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+					Main.texts.put(id,sensor);
 					sensor_panel.add(sensor);
 				}
 				sensor_panel.repaint();
