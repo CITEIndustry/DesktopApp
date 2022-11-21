@@ -251,7 +251,7 @@ public class XmlReader {
 					else if(randomValue>high){
 						sensor.setBackground(Color.RED);
 					}
-					Main.sensors.put(id,new Sensor(id,units,low,high));
+					Main.sensors.put(id,new Sensor(id,units,low,high,randomValue));
 					JLabel label = new JLabel(elm.getTextContent());
 					label.setAlignmentX(Frame.CENTER_ALIGNMENT);
 					sensor_panel.add(label);

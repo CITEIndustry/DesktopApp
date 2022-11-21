@@ -4,8 +4,9 @@ public class Sensor {
     private String units;
     private int thresholdlow;
     private int thresholdhight;
+    private int value;
 
-    public Sensor(int id, String units, int thresholdlow, int thresholdhight) {
+    public Sensor(int id, String units, int thresholdlow, int thresholdhight,int value) {
         this.id = id;
         this.units = units;
         this.thresholdlow = thresholdlow;
@@ -42,5 +43,12 @@ public class Sensor {
 
     public void setThresholdhight(int thresholdhight) {
         this.thresholdhight = thresholdhight;
+    }
+    public int getValue() {
+        return thresholdhight;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
     }
 }

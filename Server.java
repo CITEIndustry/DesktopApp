@@ -107,7 +107,7 @@ public class Server extends WebSocketServer {
                     }
                     for(int i : Main.sensors.keySet()){
                         sensorText="sensor::"+Main.sensors.get(i).getId()+"::"+Main.sensors.get(i).getUnits()+"::"+Main.sensors.get(i).getThresholdlow()
-                        +"::"+Main.sensors.get(i).getThresholdhight();
+                        +"::"+Main.sensors.get(i).getThresholdhight()+"::"+Main.sensors.get(i).getValue();
                         this.broadcast(sensorText);
                         System.out.println("sensor");
                     }
