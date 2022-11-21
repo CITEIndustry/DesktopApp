@@ -12,8 +12,8 @@ public class Sensor {
         this.units = units;
         this.thresholdlow = thresholdlow;
         this.thresholdhight = thresholdhight;
-        this.value = value;
         this.label=label;
+        this.value = value;
     }
 
     public int getId() {
