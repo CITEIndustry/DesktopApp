@@ -5,6 +5,7 @@ public class Switch {
 
     public Switch(int id, String label,String defaultVal) {
         this.id = id;
+        this.label=label;
         this.defaultVal = defaultVal;
     }
 
