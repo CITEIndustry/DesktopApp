@@ -13,9 +13,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Scanner;
-
-import javax.swing.*;
+import java.util.Map;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -23,24 +21,18 @@ import org.java_websocket.server.WebSocketServer;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.password4j.Password;
 
 
 public class Server extends WebSocketServer {
-        private Connection connDB;
-        private ArrayList<Switch> switches;
-        private ArrayList<Slider> sliders;
-        private ArrayList<Dropdown> comboBoxes;
-        private ArrayList<String> sensors;
+        private Connection connDBUser;
+        private Connection connDBSalt;
+        private Connection connDBPepper;
         
         //private ArrayList<JS
+
         public Server(int port) throws UnknownHostException {
             super(new InetSocketAddress(port));
-        }
-        public Server(int port,ArrayList<Switch> switches,ArrayList<Slider> sliders, ArrayList<Dropdown> comboBoxes) throws UnknownHostException {
-            super(new InetSocketAddress(port));
-            this.switches=switches;
-            this.sliders=sliders;
-            this.comboBoxes=comboBoxes;
         }
         public Server(InetSocketAddress address) {
             super(address);
@@ -79,45 +71,69 @@ public class Server extends WebSocketServer {
             setConnectionLostTimeout(0);
             setConnectionLostTimeout(100);
             String basePath = System.getProperty("user.dir") + File.separator;
-            String filePath = basePath + "databaseIndustrial.db";
-            connDB=UtilsSQLite.connect(filePath);
+            String filePath1 = basePath + "databaseIndustrialUser.db";
+            String filePath2 = basePath + "databaseIndustrialSalt.db";
+            String filePath3 = basePath + "databaseIndustrialPepper.db";
+            connDBUser=UtilsSQLite.connect(filePath1);
+            connDBSalt=UtilsSQLite.connect(filePath2);
+            connDBPepper=UtilsSQLite.connect(filePath3);
         }
         @Override public void onMessage(WebSocket conn, String message) {
             //Accions a fer quan es reben dades d'una conexio
+            String[] messageList = message.split(";;");
             if(message.equals("getComponents")){
                 String switchText="";
                 String sliderText="";
                 String comboText="";
-                if(Main.toggleButtons!=null||Main.sliders!=null||Main.dropdown!=null){
-                    for(int i=0;i<Main.toggleButtons.size();i++){
-                        switchText="switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal();
+                String sensorText="";
+                if(Main.toggleButtons!=null||Main.sliders!=null||Main.dropdowns!=null){
+                    for(int i : Main.toggleButtons.keySet()){
+                        switchText="switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal()+"::"+Main.toggleButtons.get(i).getLabel();
                         this.broadcast(switchText);
                         System.out.println("frameeee");
                     }
-                    for(int i=0;i<Main.sliders.size();i++){
+                    for(int i : Main.sliders.keySet()){
                         sliderText="slider::"+Main.sliders.get(i).getId()+"::"+Main.sliders.get(i).getDefaultVal()+"::"+Main.sliders.get(i).getMax()
-                        +"::"+Main.sliders.get(i).getMin()+"::"+Main.sliders.get(i).getStep();
+                        +"::"+Main.sliders.get(i).getMin()+"::"+Main.sliders.get(i).getStep()+"::"+Main.sliders.get(i).getLabel();
                         this.broadcast(sliderText);
                     }
-                    System.out.println(Main.dropdown.size());
-                    for(int i=0;i<Main.dropdown.size();i++){
-                        comboText="dropdown::"+Main.dropdown.get(i).getId()+"::"+Main.dropdown.get(i).getDefaultVal()+"::";
-                        for(int j=0;j<Main.dropdown.get(i).getOption().length;j++){
-                                comboText=comboText+Main.dropdown.get(i).getOption()[j][0]+":"+Main.dropdown.get(i).getOption()[j][1]+"/";
+                    System.out.println(Main.dropdowns.size());
+                    for(int i : Main.dropdowns.keySet()){
+                        comboText="dropdown::"+Main.dropdowns.get(i).getId()+"::"+Main.dropdowns.get(i).getDefaultVal()+"::"+Main.dropdowns.get(i).getLabel()+"::";
+                        for(int j=0;j<Main.dropdowns.get(i).getOption().length;j++){
+                            comboText=comboText+Main.dropdowns.get(i).getOption()[j][0]+":"+Main.dropdowns.get(i).getOption()[j][1]+"/";
                         }
                         this.broadcast(comboText);
+                    }
+                    for(int i : Main.sensors.keySet()){
+                        sensorText="sensor::"+Main.sensors.get(i).getId()+"::"+Main.sensors.get(i).getUnits()+"::"+Main.sensors.get(i).getThresholdlow()
+                        +"::"+Main.sensors.get(i).getThresholdhight()+"::"+Main.sensors.get(i).getValue()+"::"+Main.sensors.get(i).getLabel();
+                        this.broadcast(sensorText);
+                        System.out.println("sensor");
                     }
                     this.broadcast("Send");
                 }
                 else{
                     this.broadcast("message::ERROREMPTY");
                 }
-                /* 
-                for(int i=0;i<sensors.size();i++){
-                    this.broadcast(sensors.get(i));
-                }
-                */
                 
+            }
+            else if(messageList[0].equalsIgnoreCase("change")){
+                String[] componentData = messageList[1].split("::");
+                if(componentData[0].equalsIgnoreCase("switch")){
+                    if(componentData[2].equalsIgnoreCase("on")){
+                        Main.switches.get(Integer.parseInt(componentData[1])).setSelected(true);
+                    }
+                    else if(componentData[2].equalsIgnoreCase("off")){
+                        Main.switches.get(Integer.parseInt(componentData[1])).setSelected(false);
+                    }
+                }
+                else if(componentData[0].equalsIgnoreCase("slider")){
+                    Main.jsliders.get(Integer.parseInt(componentData[1])).setValue(Integer.parseInt(componentData[2]));
+                }
+                else if(componentData[0].equalsIgnoreCase("dropdown")){
+                    Main.comboBoxes.get(Integer.parseInt(componentData[1])).setSelectedIndex(Integer.parseInt(componentData[2]));
+                }
             }
             else{
                 String[] data = message.split(";;");
@@ -130,23 +146,46 @@ public class Server extends WebSocketServer {
                 }
                 //Gson gson = new Gson();
                 //User user = gson.fromJson(message, User.class);
-                ResultSet rs = UtilsSQLite.querySelect(connDB, "SELECT * FROM user WHERE name='"+userData[1]+"' and password='"+userData[2]+"';");
-                try {
-                    if(rs.getString("name")!=null){
-                        System.out.println("OK correct user");
-                        System.out.println("User "+userData[1]+" Correct");
-                        this.broadcast("message::OK");
-                        
+                ResultSet rsId = UtilsSQLite.querySelect(connDBUser, "SELECT id FROM user WHERE name='"+userData[1]+"';");
+                if(rsId==null){
+                    System.out.println("ERROR incorrect user");
+                    this.broadcast("message::ERROR");
+                }
+                else{
+                    ResultSet rsSalt=null;
+                    ResultSet rsPepper=null;
+                    try {
+                        rsSalt = UtilsSQLite.querySelect(connDBSalt,"SELECT * FROM salt WHERE id= "+rsId.getInt("id")+";");
+                        rsPepper = UtilsSQLite.querySelect(connDBPepper,"SELECT * FROM pepper WHERE id= "+rsId.getInt("id")+";"); 
+                    } catch (SQLException e2) {
+                        // TODO Auto-generated catch block
+                        e2.printStackTrace();
                     }
-                    else{
-                        System.out.println("ERROR incorrect user");
-                        this.broadcast("message::ERROR");
-                        //this.stop(1000);
+                    String hashComp="";
+                    try {
+                        hashComp = Password.hash(userData[2]).addSalt(rsSalt.getString("saltString")).addPepper(rsPepper.getString("pepperString")).withArgon2().getResult();
+                    } catch (SQLException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
                     }
-                } catch (SQLException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } 
+                    ResultSet rs = UtilsSQLite.querySelect(connDBUser, "SELECT * FROM user WHERE name='"+userData[1]+"' and hash='"+hashComp+"';");
+                    try {
+                        if(rs.getString("name")!=null){
+                            System.out.println("OK correct user");
+                            System.out.println("User "+userData[1]+" Correct");
+                            this.broadcast("message::OK");
+                            
+                        }
+                        else{
+                            System.out.println("ERROR incorrect user");
+                            this.broadcast("message::ERROR");
+                            //this.stop(1000);
+                        }
+                    } catch (SQLException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } 
+                }
             }
         }
         /*@Override public void onMessage(WebSocket conn, ByteBuffer message) {
@@ -176,6 +215,9 @@ public class Server extends WebSocketServer {
                 }
             }
         }*/
+        public void enviaCanvi(String canvi){
+            this.broadcast(canvi);
+        }
         public static byte[] objToBytes (Object obj) {
             byte[] result = null;
             try {
@@ -218,5 +260,4 @@ public class Server extends WebSocketServer {
             } catch (IOException e) { e.printStackTrace(); }
             return result;
         }
-        
 }
