@@ -85,7 +85,7 @@ public class Frame extends JFrame {
 		togglebutton_header.setBackground(new Color(194, 139, 217));
 		scrollPane.setColumnHeaderView(togglebutton_header);
 
-		JLabel togglebutton_label = new JLabel("ToggleButtons");
+		JLabel togglebutton_label = new JLabel("Lights");
 		togglebutton_header.add(togglebutton_label);
 		togglebutton_label.setVerticalAlignment(SwingConstants.CENTER);
 		
@@ -97,7 +97,7 @@ public class Frame extends JFrame {
 		slider_header.setBackground(new Color(194, 139, 217));
 		scrollPane_1.setColumnHeaderView(slider_header);
 
-		JLabel slider_label = new JLabel("Sliders");
+		JLabel slider_label = new JLabel("Boilers' power");
 		slider_header.add(slider_label);
 		slider_panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 
@@ -116,7 +116,7 @@ public class Frame extends JFrame {
 		dropdown_header.setBackground(new Color(194, 139, 217));
 		scrollPane_2.setColumnHeaderView(dropdown_header);
 
-		JLabel dropdown_label = new JLabel("Dropdown");
+		JLabel dropdown_label = new JLabel("Mode");
 		dropdown_header.add(dropdown_label);
 		dropdown_label.setVerticalAlignment(SwingConstants.CENTER);
 
@@ -132,7 +132,7 @@ public class Frame extends JFrame {
 		sensor_header.setBackground(new Color(194, 139, 217));
 		scrollPane_3.setColumnHeaderView(sensor_header);
 
-		JLabel sensor_label = new JLabel("Sensor");
+		JLabel sensor_label = new JLabel("Boilers' temperature");
 		sensor_header.add(sensor_label);
 		sensor_label.setVerticalAlignment(SwingConstants.CENTER);
     }
