@@ -119,23 +119,19 @@ public class Server extends WebSocketServer {
                 
             }
             else if(messageList[0].equalsIgnoreCase("change")){
-                String[] componentData = null;
-                for(int i=0;i<messageList.length;i++){
-                    componentData = messageList[i].split("::");
-                    System.out.println(componentData[1]);
-                }
-                if(componentData[1].equalsIgnoreCase("Switch")){
-                    if(componentData[3].equalsIgnoreCase("on")){
-                        Main.switches.get(componentData[2]).setSelected(true);
+                String[] componentData = messageList[1].split("::");
+                if(componentData[0].equalsIgnoreCase("Switch")){
+                    if(componentData[2].equalsIgnoreCase("on")){
+                        Main.switches.get(componentData[1]).setSelected(true);
                     }
-                    else if(componentData[3].equalsIgnoreCase("off")){
-                        Main.switches.get(componentData[2]).setSelected(false);
+                    else if(componentData[2].equalsIgnoreCase("off")){
+                        Main.switches.get(componentData[1]).setSelected(false);
                     }
                 }
-                else if(componentData[1].equalsIgnoreCase("Slider")){
+                else if(componentData[0].equalsIgnoreCase("Slider")){
                     
                 }
-                else if(componentData[1].equalsIgnoreCase("Dropdown")){
+                else if(componentData[0].equalsIgnoreCase("Dropdown")){
                     
                 }
             }

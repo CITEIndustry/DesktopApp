@@ -55,6 +55,7 @@ public class XmlReader {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			showError("XML badly written");
 		}
 	}
 
