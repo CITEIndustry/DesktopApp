@@ -151,9 +151,25 @@ public class Frame extends JFrame {
             xml = new XmlReader(filePath, this);
 			System.out.println(filePath);
 			xml.loadJToggleButtons(togglebutton_panel);
-			xml.loadJSliders(slider_panel);
-			xml.loadJDropdown(dropdown_panel);
-			xml.loadSensor(sensor_panel);
+			if(xml.getCont()){
+				xml.loadJSliders(slider_panel);
+			}
+			if(xml.getCont()){
+				xml.loadJDropdown(dropdown_panel);
+			}
+			if(xml.getCont()){
+				xml.loadSensor(sensor_panel);
+			}
+			if(!xml.getCont()){
+				togglebutton_panel.removeAll();
+				togglebutton_panel.repaint();
+				slider_panel.removeAll();
+				slider_panel.repaint();
+				dropdown_panel.removeAll();
+				dropdown_panel.repaint();
+				sensor_panel.removeAll();
+				sensor_panel.repaint();
+			}
 		}
         else {
         	System.out.println("Error: The file needs to be a .xml");

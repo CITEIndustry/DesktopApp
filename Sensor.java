@@ -5,12 +5,15 @@ public class Sensor {
     private int thresholdlow;
     private int thresholdhight;
     private int value;
+    private String label;
 
-    public Sensor(int id, String units, int thresholdlow, int thresholdhight,int value) {
+    public Sensor(int id, String units, int thresholdlow, int thresholdhight,int value,String label) {
         this.id = id;
         this.units = units;
         this.thresholdlow = thresholdlow;
         this.thresholdhight = thresholdhight;
+        this.value = value;
+        this.label=label;
     }
 
     public int getId() {
@@ -45,10 +48,19 @@ public class Sensor {
         this.thresholdhight = thresholdhight;
     }
     public int getValue() {
-        return thresholdhight;
+        return value;
     }
 
     public void setValue(int value) {
         this.value = value;
     }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+    
 }
