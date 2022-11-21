@@ -94,12 +94,12 @@ public class Server extends WebSocketServer {
                     }
                     for(int i : Main.sliders.keySet()){
                         sliderText="slider::"+Main.sliders.get(i).getId()+"::"+Main.sliders.get(i).getDefaultVal()+"::"+Main.sliders.get(i).getMax()
-                        +"::"+Main.sliders.get(i).getMin()+"::"+Main.sliders.get(i).getStep();
+                        +"::"+Main.sliders.get(i).getMin()+"::"+Main.sliders.get(i).getStep()+"::"+Main.sliders.get(i).getLabel();
                         this.broadcast(sliderText);
                     }
                     System.out.println(Main.dropdowns.size());
                     for(int i : Main.dropdowns.keySet()){
-                        comboText="dropdown::"+Main.dropdowns.get(i).getId()+"::"+Main.dropdowns.get(i).getDefaultVal()+"::";
+                        comboText="dropdown::"+Main.dropdowns.get(i).getId()+"::"+Main.dropdowns.get(i).getDefaultVal()+"::"+Main.dropdowns.get(i).getLabel()+"::";
                         for(int j=0;j<Main.dropdowns.get(i).getOption().length;j++){
                             comboText=comboText+Main.dropdowns.get(i).getOption()[j][0]+":"+Main.dropdowns.get(i).getOption()[j][1]+"/";
                         }
@@ -107,7 +107,7 @@ public class Server extends WebSocketServer {
                     }
                     for(int i : Main.sensors.keySet()){
                         sensorText="sensor::"+Main.sensors.get(i).getId()+"::"+Main.sensors.get(i).getUnits()+"::"+Main.sensors.get(i).getThresholdlow()
-                        +"::"+Main.sensors.get(i).getThresholdhight()+"::"+Main.sensors.get(i).getValue();
+                        +"::"+Main.sensors.get(i).getThresholdhight()+"::"+Main.sensors.get(i).getValue()+"::"+Main.sensors.get(i).getLabel();
                         this.broadcast(sensorText);
                         System.out.println("sensor");
                     }
