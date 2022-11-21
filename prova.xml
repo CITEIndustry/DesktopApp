@@ -7,6 +7,9 @@
         <slider id="2" default="8" min="0" max="10" step="1">Boiler 2</slider>
         <slider id="3" default="2" min="0" max="10" step="1">Boiler 3</slider>
         <dropdown id="2" default="0" label="Boiler 1">
+        <switch id="0" default="on">Light 1</switch>
+        <slider id="1" default="5" min="0" max="10" step="1">Boiler 1</slider>
+        <dropdown id="2" default="0" label="Boiler 5">
             <option value="1">Cold</option>
             <option value="2">Chill</option>
             <option value="3">Hot</option>
@@ -27,5 +30,8 @@
         <sensor id="3" units="ºC" thresholdlow="5" thresholdhigh="10">Boiler 1</sensor>
         <sensor id="4" units="ºC" thresholdlow="0" thresholdhigh="4">Boiler 2</sensor>
         <sensor id="5" units="ºC" thresholdlow="11" thresholdhigh="15">Boiler 3</sensor>
+        <sensor id="3" units="ºC" thresholdlow="5" thresholdhigh="10">Boiler 2</sensor>
+        <sensor id="4" units="ºC" thresholdlow="0" thresholdhigh="4">Boiler 3</sensor>
+        <sensor id="5" units="ºC" thresholdlow="11" thresholdhigh="15">Boiler 4</sensor>
     </controls>
 </root>

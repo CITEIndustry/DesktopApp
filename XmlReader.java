@@ -91,6 +91,12 @@ public class XmlReader {
 						JLabel label = new JLabel(elm.getTextContent());
 						label.setAlignmentX(Frame.CENTER_ALIGNMENT);
 						togglebutton_panel.add(label);
+
+						if(Main.toggleButtons.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+							showError("Repeated id in the switch at the .xml");
+							cont=false;
+						}
+
 						Main.toggleButtons.put(Integer.parseInt(elm.getAttribute("id")),new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getTextContent(),elm.getAttribute("default")));
 						button.setAlignmentX(Frame.CENTER_ALIGNMENT);
 						button.addChangeListener(new ChangeListener() {
@@ -154,6 +160,11 @@ public class XmlReader {
 						slider.setMajorTickSpacing(step);
 						slider.setValue(initialValue);
 						slider.setPaintLabels(true);
+						if(Main.sliders.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+							showError("Repeated id in the slider at the .xml");
+							cont=false;
+						}
+
 						Main.sliders.put(Integer.parseInt(elm.getAttribute("id")),new Slider(Integer.parseInt(elm.getAttribute("id")),Integer.parseInt(elm.getAttribute("default")),Integer.parseInt(elm.getAttribute("min")),Integer.parseInt(elm.getAttribute("max")),Integer.parseInt(elm.getAttribute("step")),elm.getTextContent()));
 						slider.setAlignmentX(Frame.CENTER_ALIGNMENT);
 						slider_panel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -218,6 +229,10 @@ public class XmlReader {
 								drw.setOption(j, 1, opc.getTextContent());
 							}
 							
+						}
+						if(Main.dropdowns.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+							showError("Repeated id in the dropdown at the .xml");
+							cont=false;
 						}
 						Main.dropdowns.put(Integer.parseInt(elm.getAttribute("id")),drw);
 						combo.addActionListener(new ActionListener(){
@@ -287,6 +302,11 @@ public class XmlReader {
 						else if(randomValue>high){
 							sensor.setBackground(Color.RED);
 						}
+						if(Main.sensors.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+							showError("Repeated id in the sensor at the .xml");
+							cont=false;
+						}
+
 						Main.sensors.put(id,new Sensor(id,units,low,high,randomValue,elm.getTextContent()));
 						JLabel label = new JLabel(elm.getTextContent());
 						label.setAlignmentX(Frame.CENTER_ALIGNMENT);
