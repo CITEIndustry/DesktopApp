@@ -48,7 +48,7 @@ public class Sensor {
         this.thresholdhight = thresholdhight;
     }
     public int getValue() {
-        return thresholdhight;
+        return value;
     }
 
     public void setValue(int value) {
