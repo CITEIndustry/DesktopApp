@@ -91,7 +91,7 @@ public class XmlReader {
 							
 							}
 							for(int i : Main.toggleButtons.keySet()){
-								switchChange="change::"+"switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal();
+								switchChange="change;;switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal();
 								Main.server.enviaCanvi(switchChange);
 							}
 						}
@@ -141,7 +141,7 @@ public class XmlReader {
 							Main.sliders.get(id).setDefaultVal(slider.getValue());
 							String sliderChange="";
 								for(int i : Main.sliders.keySet()){
-									sliderChange="change::slider::"+Main.sliders.get(i).getId()+"::"+Main.sliders.get(i).getDefaultVal();
+									sliderChange="change;;slider::"+Main.sliders.get(i).getId()+"::"+Main.sliders.get(i).getDefaultVal();
 									Main.server.enviaCanvi("sliderChange");
 								}
 							}
@@ -196,7 +196,7 @@ public class XmlReader {
 							Main.dropdowns.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal(combo.getSelectedIndex());
 							String dropdownChange="";
 							for(int i : Main.dropdowns.keySet()){
-								dropdownChange="change::dropdown::"+Main.dropdowns.get(i).getId()+"::"+Main.dropdowns.get(i).getDefaultVal()+"::";
+								dropdownChange="change;;dropdown::"+Main.dropdowns.get(i).getId()+"::"+Main.dropdowns.get(i).getDefaultVal()+"::";
 								Main.server.enviaCanvi(dropdownChange);
 							}
 						}

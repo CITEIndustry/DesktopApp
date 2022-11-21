@@ -14,6 +14,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
@@ -87,7 +88,7 @@ public class Frame extends JFrame {
 		JLabel togglebutton_label = new JLabel("ToggleButtons");
 		togglebutton_header.add(togglebutton_label);
 		togglebutton_label.setVerticalAlignment(SwingConstants.CENTER);
-
+		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		contentPane.add(scrollPane_1);
 

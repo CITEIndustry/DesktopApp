@@ -80,7 +80,7 @@ public class Server extends WebSocketServer {
         }
         @Override public void onMessage(WebSocket conn, String message) {
             //Accions a fer quan es reben dades d'una conexio
-            String[] messageList = message.split("::");
+            String[] messageList = message.split(";;");
             if(message.equals("getComponents")){
                 String switchText="";
                 String sliderText="";
@@ -116,21 +116,18 @@ public class Server extends WebSocketServer {
                 else{
                     this.broadcast("message::ERROREMPTY");
                 }
-                /* 
-                for(int i=0;i<sensors.size();i++){
-                    this.broadcast(sensors.get(i));
-                }
-                */
                 
             }
-            else if(messageList[0].equalsIgnoreCase("Switch")){
+            else if(messageList[0].equalsIgnoreCase("change")){
+                if(messageList[1].equalsIgnoreCase("Switch")){
 
-            }
-            else if(messageList[0].equalsIgnoreCase("Slider")){
-                
-            }
-            else if(messageList[0].equalsIgnoreCase("Dropdown")){
-                
+                }
+                else if(messageList[1].equalsIgnoreCase("Slider")){
+                    
+                }
+                else if(messageList[1].equalsIgnoreCase("Dropdown")){
+                    
+                }
             }
             else{
                 String[] data = message.split(";;");
