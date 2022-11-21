@@ -75,19 +75,24 @@ public class XmlReader {
 					JLabel label = new JLabel(elm.getTextContent());
 					label.setAlignmentX(Frame.CENTER_ALIGNMENT);
 					togglebutton_panel.add(label);
-					Main.toggleButtons.put(Integer.parseInt(elm.getAttribute("id")),new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getAttribute("default")));
+					Main.toggleButtons.put(Integer.parseInt(elm.getAttribute("id")),new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getTextContent(),elm.getAttribute("default")));
 					button.setAlignmentX(Frame.CENTER_ALIGNMENT);
 					button.addChangeListener(new ChangeListener() {
 	
 						@Override
 						public void stateChanged(ChangeEvent e) {
 							// TODO Auto-generated method stub
+							String switchChange="";
 							if(button.isSelected()){
 								Main.toggleButtons.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal("on");
 							}
 							else{
 								Main.toggleButtons.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal("off");
 							
+							}
+							for(int i : Main.toggleButtons.keySet()){
+								switchChange="change::"+"switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal();
+								Main.server.enviaCanvi(switchChange);
 							}
 						}
 					});
@@ -96,7 +101,7 @@ public class XmlReader {
 				} 
 			}
 		}else{
-			showError("There is a problem in the dropdown at the .xml");
+			showError("There is a problem in the switch at the .xml");
 		}
 	}
 
@@ -134,6 +139,11 @@ public class XmlReader {
 						public void stateChanged(ChangeEvent e) {
 							// TODO Auto-generated method stub
 							Main.sliders.get(id).setDefaultVal(slider.getValue());
+							String sliderChange="";
+								for(int i : Main.sliders.keySet()){
+									sliderChange="change::slider::"+Main.sliders.get(i).getId()+"::"+Main.sliders.get(i).getDefaultVal();
+									Main.server.enviaCanvi("sliderChange");
+								}
 							}
 					});
 					JLabel label = new JLabel(elm.getTextContent());
@@ -153,6 +163,7 @@ public class XmlReader {
 		dropdown_panel.removeAll();
 		Main.dropdowns = new HashMap<Integer, Dropdown>();
 		NodeList list =	doc.getElementsByTagName("dropdown");
+		JLabel label = new JLabel();
 		if (list.getLength() != 0){
 			//  Puedes continuar.
 			for (int i = 0; i < list.getLength(); i++) {
@@ -164,6 +175,7 @@ public class XmlReader {
 					Element elm = (Element) node;
 					NodeList options = elm.getElementsByTagName("option");
 					Dropdown drw = new Dropdown(Integer.parseInt(elm.getAttribute("id")),Integer.parseInt(elm.getAttribute("default")),options.getLength());
+					label = new JLabel(elm.getAttribute("label"));
 					for (int j = 0; j < options.getLength(); j++) {
 						Node nodeoption = options.item(j);
 						if (nodeoption.getNodeType() == Node.ELEMENT_NODE) {
@@ -176,21 +188,28 @@ public class XmlReader {
 					}
 					
 					Main.dropdowns.put(Integer.parseInt(elm.getAttribute("id")),drw);
+					combo.addActionListener(new ActionListener(){
+
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							// TODO Auto-generated method stub
+							Main.dropdowns.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal(combo.getSelectedIndex());
+							String dropdownChange="";
+							for(int i : Main.dropdowns.keySet()){
+								dropdownChange="change::dropdown::"+Main.dropdowns.get(i).getId()+"::"+Main.dropdowns.get(i).getDefaultVal()+"::";
+								Main.server.enviaCanvi(dropdownChange);
+							}
+						}
+						
+					}
+						
+					);
 				}
 				/*JLabel label = new JLabel(node.getAttribute("label"));
 				label.setAlignmentX(Frame.CENTER_ALIGNMENT);
 				dropdown_panel.add(label);*/
-				combo.addActionListener(new ActionListener(){
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-				}
-					
-				);
+				label.setAlignmentX(Frame.CENTER_ALIGNMENT);
+				dropdown_panel.add(label);
 				dropdown_panel.add(combo);
 			}
 		}else{
@@ -229,6 +248,9 @@ public class XmlReader {
 						sensor.setBackground(Color.RED);
 					}
 					Main.sensors.put(id,new Sensor(id,units,low,high));
+					JLabel label = new JLabel(elm.getTextContent());
+					label.setAlignmentX(Frame.CENTER_ALIGNMENT);
+					sensor_panel.add(label);
 					sensor.setAlignmentX(Frame.CENTER_ALIGNMENT);
 					//sensor_panel.add(Box.createRigidArea(new Dimension(0, 10)));
 					sensor_panel.add(sensor);

@@ -80,6 +80,7 @@ public class Server extends WebSocketServer {
         }
         @Override public void onMessage(WebSocket conn, String message) {
             //Accions a fer quan es reben dades d'una conexio
+            String[] messageList = message.split("::");
             if(message.equals("getComponents")){
                 String switchText="";
                 String sliderText="";
@@ -87,7 +88,7 @@ public class Server extends WebSocketServer {
                 String sensorText="";
                 if(Main.toggleButtons!=null||Main.sliders!=null||Main.dropdowns!=null){
                     for(int i : Main.toggleButtons.keySet()){
-                        switchText="switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal();
+                        switchText="switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal()+"::"+Main.toggleButtons.get(i).getLabel();
                         this.broadcast(switchText);
                         System.out.println("frameeee");
                     }
@@ -120,6 +121,15 @@ public class Server extends WebSocketServer {
                     this.broadcast(sensors.get(i));
                 }
                 */
+                
+            }
+            else if(messageList[0].equalsIgnoreCase("Switch")){
+
+            }
+            else if(messageList[0].equalsIgnoreCase("Slider")){
+                
+            }
+            else if(messageList[0].equalsIgnoreCase("Dropdown")){
                 
             }
             else{
@@ -202,6 +212,9 @@ public class Server extends WebSocketServer {
                 }
             }
         }*/
+        public void enviaCanvi(String canvi){
+            this.broadcast(canvi);
+        }
         public static byte[] objToBytes (Object obj) {
             byte[] result = null;
             try {
