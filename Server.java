@@ -128,11 +128,11 @@ public class Server extends WebSocketServer {
                         Main.switches.get(Integer.parseInt(componentData[1])).setSelected(false);
                     }
                 }
-                else if(componentData[0].equalsIgnoreCase("Slider")){
-                    
+                else if(componentData[0].equalsIgnoreCase("slider")){
+                    Main.jsliders.get(Integer.parseInt(componentData[1])).setValue(Integer.parseInt(componentData[2]));
                 }
-                else if(componentData[0].equalsIgnoreCase("Dropdown")){
-                    
+                else if(componentData[0].equalsIgnoreCase("sropdown")){
+                    Main.comboBoxes.get(Integer.parseInt(componentData[1])).setSelectedIndex(Integer.parseInt(componentData[2]));
                 }
             }
             else{
