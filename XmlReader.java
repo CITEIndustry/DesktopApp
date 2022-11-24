@@ -70,7 +70,6 @@ public class XmlReader {
 		togglebutton_panel.removeAll();
 		Main.toggleButtons = new HashMap<Integer, Switch>();
 		NodeList list = doc.getElementsByTagName("switch");
-		if (list.getLength() != 0){
 			try{
 				for (int i = 0; i < list.getLength(); i++) {
 					Node node = list.item(i);
@@ -112,6 +111,10 @@ public class XmlReader {
 								}
 							}
 						});
+						if(Main.switches.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+							showError("There is a problem in the switch at the .xml, repeated id");
+							cont=false;
+						}
 						Main.switches.put(Integer.parseInt(elm.getAttribute("id")),button);
 						togglebutton_panel.add(Box.createRigidArea(new Dimension(0, 10)));
 						togglebutton_panel.add(button);
@@ -122,18 +125,12 @@ public class XmlReader {
 			showError("There is a problem in the switch at the .xml");
 			cont=false;
 		}
-		}else{
-			showError("There is a problem in the switch at the .xml");
-			cont=false;
-		}
 	}
 
 	public void loadJSliders(JPanel slider_panel) {
 		slider_panel.removeAll();
 		Main.sliders = new HashMap<Integer, Slider>();
 		NodeList list =	doc.getElementsByTagName("slider");
-		if (list.getLength() != 0){
-			//  Puedes continuar.
 			try{
 				for (int i = 0; i < list.getLength(); i++) {
 					Node node = list.item(i);
@@ -171,6 +168,10 @@ public class XmlReader {
 									}
 								}
 						});
+						if(Main.jsliders.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+							showError("There is a problem in the slider at the .xml, repeated id");
+							cont=false;
+						}
 						Main.jsliders.put(Integer.parseInt(elm.getAttribute("id")),slider);
 						JLabel label = new JLabel(elm.getTextContent());
 						label.setAlignmentX(Frame.CENTER_ALIGNMENT);
@@ -183,12 +184,6 @@ public class XmlReader {
 			showError("There is a problem in the slider at the .xml");
 			cont=false;
 		}
-		}else{
-			//  Uno de los objetos esta nullo.
-			// CREAR UN POPUP CON EL ERROR
-			showError("There is a problem in the slider at the .xml");
-			cont=false;
-		}
 	}
 
 	public void loadJDropdown(JPanel dropdown_panel) {
@@ -196,8 +191,6 @@ public class XmlReader {
 		Main.dropdowns = new HashMap<Integer, Dropdown>();
 		NodeList list =	doc.getElementsByTagName("dropdown");
 		JLabel label = new JLabel();
-		if (list.getLength() != 0){
-			//  Puedes continuar.
 			try{
 				for (int i = 0; i < list.getLength(); i++) {
 					JComboBox combo = new JComboBox();
@@ -236,6 +229,10 @@ public class XmlReader {
 						}
 							
 						);
+						if(Main.comboBoxes.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+							showError("There is a problem in the dropdown at the .xml, repeated id");
+							cont=false;
+						}
 						Main.comboBoxes.put(Integer.parseInt(elm.getAttribute("id")),combo);
 					}
 					/*JLabel label = new JLabel(node.getAttribute("label"));
@@ -250,20 +247,12 @@ public class XmlReader {
 			showError("There is a problem in the dropdown at the .xml");
 			cont=false;
 		}
-		}else{
-			//  Uno de los objetos esta nullo.
-			// CREAR UN POPUP CON EL ERROR
-			showError("There is a problem in the dropdown at the .xml");
-			cont=false;
-		}
 	}
 
 	public void loadSensor(JPanel sensor_panel){
 		sensor_panel.removeAll();
 		Main.sensors = new HashMap<Integer, Sensor>();
 		NodeList list =	doc.getElementsByTagName("sensor");
-		if (list.getLength() != 0){
-			//  Puedes continuar.
 			try{
 				for (int i = 0; i < list.getLength(); i++) {
 					Node node = list.item(i);
@@ -293,6 +282,10 @@ public class XmlReader {
 						sensor_panel.add(label);
 						sensor.setAlignmentX(Frame.CENTER_ALIGNMENT);
 						//sensor_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+						if(Main.texts.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+							showError("There is a problem in the sensor at the .xml, repeated id");
+							cont=false;
+						}
 						Main.texts.put(id,sensor);
 						sensor_panel.add(sensor);
 					}
@@ -301,12 +294,6 @@ public class XmlReader {
 		}catch(Exception e){
 			cont=false;
 			showError("There is a problem with something in the sensor at the .xml");
-		}
-		}else{
-			//  Uno de los objetos esta nullo.
-			// CREAR UN POPUP CON EL ERROR
-			cont=false;
-			showError("There is a problem in the sensor at the .xml");
 		}
 	}
 	public void guardarXML(String path) {
