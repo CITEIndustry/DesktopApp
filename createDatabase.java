@@ -65,7 +65,19 @@ public class createDatabase {
                                     + " id integer PRIMARY KEY AUTOINCREMENT,"
                                     + " name varchar(35) NOT NULL UNIQUE, "
                                     + " hash varchar(500));");
-
+        UtilsSQLite.queryUpdate(conn, "CREATE TABLE IF NOT EXISTS snapshot ("
+                                    + " id integer PRIMARY KEY AUTOINCREMENT,"
+                                    + " day datetime, "
+                                    + " idUser integer,"
+                                    + " CONSTRAINT fk_user FOREIGN KEY (idUser) "
+                                    + " REFERENCES user (id)"
+                                    + " );");
+        UtilsSQLite.queryUpdate(conn, "CREATE TABLE IF NOT EXISTS components ("
+                                    + " component varchar(1000),"
+                                    + " idSnapshot integer,"
+                                    + " CONSTRAINT fk_snapshot FOREIGN KEY (idSnapshot) "
+                                    + " REFERENCES snapshot (id)"
+                                    + " );");                        
         // Afegir elements a una taula
         UtilsSQLite.queryUpdate(conn, "INSERT INTO user (name,hash) VALUES (\"Enric\",\""+hashList.get(0)+"\");");
         UtilsSQLite.queryUpdate(conn, "INSERT INTO user (name,hash) VALUES (\"Lluis\",\""+hashList.get(1)+"\");");

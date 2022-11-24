@@ -191,6 +191,7 @@ public class XmlReader {
 		Main.dropdowns = new HashMap<Integer, Dropdown>();
 		NodeList list =	doc.getElementsByTagName("dropdown");
 		JLabel label = new JLabel();
+		int defVal=0;
 			try{
 				for (int i = 0; i < list.getLength(); i++) {
 					JComboBox combo = new JComboBox();
@@ -200,8 +201,10 @@ public class XmlReader {
 					if (node.getNodeType() == Node.ELEMENT_NODE) {
 						Element elm = (Element) node;
 						NodeList options = elm.getElementsByTagName("option");
-						Dropdown drw = new Dropdown(Integer.parseInt(elm.getAttribute("id")),Integer.parseInt(elm.getAttribute("default")),options.getLength(),elm.getAttribute("label"));
+						defVal = Integer.parseInt(elm.getAttribute("default"));
+						Dropdown drw = new Dropdown(Integer.parseInt(elm.getAttribute("id")),defVal,options.getLength(),elm.getAttribute("label"));
 						label = new JLabel(elm.getAttribute("label"));
+						
 						for (int j = 0; j < options.getLength(); j++) {
 							Node nodeoption = options.item(j);
 							if (nodeoption.getNodeType() == Node.ELEMENT_NODE) {
@@ -240,6 +243,7 @@ public class XmlReader {
 					dropdown_panel.add(label);*/
 					label.setAlignmentX(Frame.CENTER_ALIGNMENT);
 					dropdown_panel.add(label);
+					combo.setSelectedIndex(defVal);
 					dropdown_panel.add(combo);
 				}
 		}

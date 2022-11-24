@@ -2,6 +2,9 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.awt.GridLayout;
 
 import javax.swing.BoxLayout;
@@ -30,6 +33,7 @@ public class Frame extends JFrame {
 	private JPanel slider_panel = new JPanel();
 	private JPanel dropdown_panel = new JPanel();
 	private JPanel sensor_panel = new JPanel();
+	private JMenuItem saveSnapshot;
     private static String filePath;
     private static JFileChooser filechooser = new JFileChooser(System.getProperty("user.dir"));
     private static Document doc;
@@ -68,8 +72,76 @@ public class Frame extends JFrame {
 		
 		menu = new JMenu("Views");
 		menubar.add(menu);
-    }
 
+		menu = new JMenu("Snapshots");
+		menubar.add(menu);
+		saveSnapshot = new JMenuItem("Save snapshot");
+		saveSnapshot.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String basePath = System.getProperty("user.dir") + File.separator;
+				String filePath = basePath + "databaseIndustrialUser.db";
+            	Connection connDBUser=UtilsSQLite.connect(filePath);
+				UtilsSQLite.connect(filePath);
+				String user = JOptionPane.showInputDialog("Introdueix el nom d'usuari");
+				ResultSet userId = UtilsSQLite.querySelect(connDBUser, "SELECT id FROM user where name ='"+user+"';");
+				int usId = 0;
+				try {
+					usId = userId.getInt("id");
+					UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO snapshot (day,idUser) VALUES (datetime('now','localtime'),"+usId+");");
+				} catch (SQLException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+				if(usId!=0){
+					ResultSet rsId = UtilsSQLite.querySelect(connDBUser, "SELECT id FROM snapshot ORDER BY id desc;");
+					try {
+						String componentText="";
+						if(Main.toggleButtons!=null||Main.sliders!=null||Main.dropdowns!=null){
+							for(int i : Main.toggleButtons.keySet()){
+								componentText="switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal()+"::"+Main.toggleButtons.get(i).getLabel();
+								UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+															+componentText+"\","+rsId.getInt("id")+");");
+							}
+							for(int i : Main.sliders.keySet()){
+								componentText="slider::"+Main.sliders.get(i).getId()+"::"+Main.sliders.get(i).getDefaultVal()+"::"+Main.sliders.get(i).getMax()
+								+"::"+Main.sliders.get(i).getMin()+"::"+Main.sliders.get(i).getStep()+"::"+Main.sliders.get(i).getLabel();
+								UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+															+componentText+"\","+rsId.getInt("id")+");");
+							}
+							System.out.println(Main.dropdowns.size());
+							for(int i : Main.dropdowns.keySet()){
+								componentText="dropdown::"+Main.dropdowns.get(i).getId()+"::"+Main.dropdowns.get(i).getDefaultVal()+"::"+Main.dropdowns.get(i).getLabel()+"::";
+								for(int j=0;j<Main.dropdowns.get(i).getOption().length;j++){
+									componentText=componentText+Main.dropdowns.get(i).getOption()[j][0]+":"+Main.dropdowns.get(i).getOption()[j][1]+"/";
+								}
+								UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+								+componentText+"\","+rsId.getInt("id")+");");
+							}
+							for(int i : Main.sensors.keySet()){
+								componentText="sensor::"+Main.sensors.get(i).getId()+"::"+Main.sensors.get(i).getUnits()+"::"+Main.sensors.get(i).getThresholdlow()
+								+"::"+Main.sensors.get(i).getThresholdhight()+"::"+Main.sensors.get(i).getValue()+"::"+Main.sensors.get(i).getLabel();
+								UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+								+componentText+"\","+rsId.getInt("id")+");");
+							}
+						}
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			UtilsSQLite.disconnect(connDBUser);
+			}
+			
+		});
+		saveSnapshot.setEnabled(false);
+		menu.add(saveSnapshot);
+    }
+	public void enable(){
+		saveSnapshot.setEnabled(true);
+	}
     public void makeContentPane(){
         contentPane.setLayout(new GridLayout(2, 0, 5, 5));
 
@@ -150,6 +222,30 @@ public class Frame extends JFrame {
 			filePath = filechooser.getSelectedFile().getAbsolutePath();
             xml = new XmlReader(filePath, this);
 			System.out.println(filePath);
+				if(Main.comboBoxes!=null){
+					Main.comboBoxes.clear();
+				}
+				if(Main.sliders!=null){
+					Main.switches.clear();
+				}
+				if(Main.jsliders!=null){
+					Main.jsliders.clear();
+				}
+				if(Main.sliders!=null){
+					Main.sliders.clear();
+				}
+				if(Main.dropdowns!=null){
+					Main.dropdowns.clear();
+				}
+				if(Main.comboBoxes!=null){
+					Main.comboBoxes.clear();
+				}
+				if(Main.texts!=null){
+					Main.texts.clear();
+				}
+				if(Main.sensors!=null){
+					Main.sensors.clear();
+				}	
 			xml.loadJToggleButtons(togglebutton_panel);
 			if(xml.getCont()){
 				xml.loadJSliders(slider_panel);
@@ -174,6 +270,7 @@ public class Frame extends JFrame {
         else {
         	System.out.println("Error: The file needs to be a .xml");
         }
+		enable();
 		setVisible(true);
 	}
 
