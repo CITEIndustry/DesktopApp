@@ -167,59 +167,68 @@ public class XmlReader {
 	public void loadJToggleButtons(JPanel togglebutton_panel) {
 		togglebutton_panel.removeAll();
 		Main.toggleButtons = new HashMap<Integer, Switch>();
-		NodeList list = doc.getElementsByTagName("switch");
-			try{
-				for (int i = 0; i < list.getLength(); i++) {
-					Node node = list.item(i);
-					if (node.getNodeType() == Node.ELEMENT_NODE) {
-						Element elm = (Element) node;
-						JToggleButton button = new JToggleButton();
-						button.setText(elm.getTextContent());
-						if (elm.getAttribute("default").equals("on")) {
-							button.setSelected(true);
-						}
-						else if (elm.getAttribute("default").equals("off")) {
-							button.setSelected(false);
-						}
-						else{
-							showError("There is a problem in the default value of the switch at the .xml");
-							cont=false;
-						}
-						JLabel label = new JLabel(elm.getTextContent());
-						label.setAlignmentX(Frame.CENTER_ALIGNMENT);
-						togglebutton_panel.add(label);
-						Main.toggleButtons.put(Integer.parseInt(elm.getAttribute("id")),new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getTextContent(),elm.getAttribute("default")));
-						button.setAlignmentX(Frame.CENTER_ALIGNMENT);
-						button.addChangeListener(new ChangeListener() {
-		
-							@Override
-							public void stateChanged(ChangeEvent e) {
-								// TODO Auto-generated method stub
-								String switchChange="";
-								if(button.isSelected()){
-									Main.toggleButtons.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal("on");
-								}
-								else{
-									Main.toggleButtons.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal("off");
-								
-								}
-								for(int i : Main.toggleButtons.keySet()){
-									switchChange="change;;switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal();
-									Main.server.enviaCanvi(switchChange);
-								}
+		//Loading all controls
+		try{
+			NodeList controls = doc.getElementsByTagName("controls");
+			for(int i = 0; i < controls.getLength();i++){
+				Node control = controls.item(i);
+				
+				if (control.getNodeType() == Node.ELEMENT_NODE) {
+					Element controlElm = (Element) control;
+					System.out.println("Bloque: "+controlElm.getAttribute("name"));
+					NodeList list = controlElm.getElementsByTagName("switch");
+					for (int j = 0; j < list.getLength(); j++) {
+						Node node = list.item(j);
+						if (node.getNodeType() == Node.ELEMENT_NODE) {
+							Element elm = (Element) node;
+							JToggleButton button = new JToggleButton();
+							button.setText(elm.getTextContent());
+							if (elm.getAttribute("default").equals("on")) {
+								button.setSelected(true);
 							}
-						});
-						if(Main.switches.containsKey(Integer.parseInt(elm.getAttribute("id")))){
-							showError("There is a problem in the switch at the .xml, repeated id");
-							cont=false;
-						}
-						Main.switches.put(Integer.parseInt(elm.getAttribute("id")),button);
-						togglebutton_panel.add(Box.createRigidArea(new Dimension(0, 10)));
-						togglebutton_panel.add(button);
-					} 
+							else if (elm.getAttribute("default").equals("off")) {
+								button.setSelected(false);
+							}
+							else{
+								showError("There is a problem in the default value of the switch at the .xml");
+								cont=false;
+							}
+							JLabel label = new JLabel(elm.getTextContent());
+							label.setAlignmentX(Frame.CENTER_ALIGNMENT);
+							togglebutton_panel.add(label);
+							Main.toggleButtons.put(Integer.parseInt(elm.getAttribute("id")),new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getTextContent(),elm.getAttribute("default")));
+							button.setAlignmentX(Frame.CENTER_ALIGNMENT);
+							button.addChangeListener(new ChangeListener() {
+			
+								@Override
+								public void stateChanged(ChangeEvent e) {
+									// TODO Auto-generated method stub
+									String switchChange="";
+									if(button.isSelected()){
+										Main.toggleButtons.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal("on");
+									}
+									else{
+										Main.toggleButtons.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal("off");
+									
+									}
+									for(int i : Main.toggleButtons.keySet()){
+										switchChange="change;;switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal();
+										Main.server.enviaCanvi(switchChange);
+									}
+								}
+							});
+							if(Main.switches.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+								showError("There is a problem in the switch at the .xml, repeated id");
+								cont=false;
+							}
+							Main.switches.put(Integer.parseInt(elm.getAttribute("id")),button);
+							togglebutton_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+							togglebutton_panel.add(button);
+						} 
+					}
 				}
-		}
-		catch(Exception e){
+			}
+		}catch(Exception e){
 			showError("There is a problem in the switch at the .xml");
 			cont=false;
 		}
@@ -228,55 +237,64 @@ public class XmlReader {
 	public void loadJSliders(JPanel slider_panel) {
 		slider_panel.removeAll();
 		Main.sliders = new HashMap<Integer, Slider>();
-		NodeList list =	doc.getElementsByTagName("slider");
-			try{
-				for (int i = 0; i < list.getLength(); i++) {
-					Node node = list.item(i);
-					if (node.getNodeType() == Node.ELEMENT_NODE) {
-						Element elm = (Element) node;
-						JSlider slider = new JSlider();
-						int id = Integer.valueOf(elm.getAttribute("id"));
-						int initialValue = Integer.valueOf(elm.getAttribute("default"));
-						int min = Integer.valueOf(elm.getAttribute("min"));
-						int max = Integer.valueOf(elm.getAttribute("max"));
-						int step = Integer.valueOf(elm.getAttribute("step"));
-						slider.setMaximumSize(new Dimension((int) slider.getPreferredSize().getWidth(), 40));
-						slider.setSnapToTicks(true);
-						slider.setPaintTicks(true);
-						slider.setMinimum(min);
-						slider.setMaximum(max);
-						slider.setMinorTickSpacing(step);
-						slider.setMajorTickSpacing(step);
-						slider.setValue(initialValue);
-						slider.setPaintLabels(true);
-						Main.sliders.put(Integer.parseInt(elm.getAttribute("id")),new Slider(Integer.parseInt(elm.getAttribute("id")),Integer.parseInt(elm.getAttribute("default")),Integer.parseInt(elm.getAttribute("min")),Integer.parseInt(elm.getAttribute("max")),Integer.parseInt(elm.getAttribute("step")),elm.getTextContent()));
-						slider.setAlignmentX(Frame.CENTER_ALIGNMENT);
-						slider_panel.add(Box.createRigidArea(new Dimension(0, 10)));
-						slider.addChangeListener(new ChangeListener() {
-		
-							@Override
-							public void stateChanged(ChangeEvent e) {
-								// TODO Auto-generated method stub
-								Main.sliders.get(id).setDefaultVal(slider.getValue());
-								System.out.println(slider.getValue());
-								String sliderChange="";
-									for(int i : Main.sliders.keySet()){
-										sliderChange="change;;slider::"+Main.sliders.get(i).getId()+"::"+Main.sliders.get(i).getDefaultVal();
-										Main.server.enviaCanvi(sliderChange);
+		NodeList controls = doc.getElementsByTagName("controls");
+		try{
+			
+			for(int i = 0; i < controls.getLength();i++){
+				Node control = controls.item(i);
+				if (control.getNodeType() == Node.ELEMENT_NODE) {
+					Element controlElm = (Element) control;
+					System.out.println("Bloque: "+controlElm.getAttribute("name"));
+					NodeList list = controlElm.getElementsByTagName("slider");
+					for (int j = 0; j < list.getLength(); j++) {
+						Node node = list.item(j);
+						if (node.getNodeType() == Node.ELEMENT_NODE) {
+							Element elm = (Element) node;
+							JSlider slider = new JSlider();
+							int id = Integer.valueOf(elm.getAttribute("id"));
+							int initialValue = Integer.valueOf(elm.getAttribute("default"));
+							int min = Integer.valueOf(elm.getAttribute("min"));
+							int max = Integer.valueOf(elm.getAttribute("max"));
+							int step = Integer.valueOf(elm.getAttribute("step"));
+							slider.setMaximumSize(new Dimension((int) slider.getPreferredSize().getWidth(), 40));
+							slider.setSnapToTicks(true);
+							slider.setPaintTicks(true);
+							slider.setMinimum(min);
+							slider.setMaximum(max);
+							slider.setMinorTickSpacing(step);
+							slider.setMajorTickSpacing(step);
+							slider.setValue(initialValue);
+							slider.setPaintLabels(true);
+							Main.sliders.put(Integer.parseInt(elm.getAttribute("id")),new Slider(Integer.parseInt(elm.getAttribute("id")),Integer.parseInt(elm.getAttribute("default")),Integer.parseInt(elm.getAttribute("min")),Integer.parseInt(elm.getAttribute("max")),Integer.parseInt(elm.getAttribute("step")),elm.getTextContent()));
+							slider.setAlignmentX(Frame.CENTER_ALIGNMENT);
+							slider_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+							slider.addChangeListener(new ChangeListener() {
+			
+								@Override
+								public void stateChanged(ChangeEvent e) {
+									// TODO Auto-generated method stub
+									Main.sliders.get(id).setDefaultVal(slider.getValue());
+									System.out.println(slider.getValue());
+									String sliderChange="";
+										for(int j : Main.sliders.keySet()){
+											sliderChange="change;;slider::"+Main.sliders.get(j).getId()+"::"+Main.sliders.get(j).getDefaultVal();
+											Main.server.enviaCanvi(sliderChange);
+										}
 									}
-								}
-						});
-						if(Main.jsliders.containsKey(Integer.parseInt(elm.getAttribute("id")))){
-							showError("There is a problem in the slider at the .xml, repeated id");
-							cont=false;
+							});
+							if(Main.jsliders.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+								showError("There is a problem in the slider at the .xml, repeated id");
+								cont=false;
+							}
+							Main.jsliders.put(Integer.parseInt(elm.getAttribute("id")),slider);
+							JLabel label = new JLabel(elm.getTextContent());
+							label.setAlignmentX(Frame.CENTER_ALIGNMENT);
+							slider_panel.add(label);
+							slider_panel.add(slider);
 						}
-						Main.jsliders.put(Integer.parseInt(elm.getAttribute("id")),slider);
-						JLabel label = new JLabel(elm.getTextContent());
-						label.setAlignmentX(Frame.CENTER_ALIGNMENT);
-						slider_panel.add(label);
-						slider_panel.add(slider);
 					}
 				}
+			}
 		}
 		catch(Exception e){
 			showError("There is a problem in the slider at the .xml");
@@ -287,65 +305,75 @@ public class XmlReader {
 	public void loadJDropdown(JPanel dropdown_panel) {
 		dropdown_panel.removeAll();
 		Main.dropdowns = new HashMap<Integer, Dropdown>();
-		NodeList list =	doc.getElementsByTagName("dropdown");
 		JLabel label = new JLabel();
 		int defVal=0;
-			try{
-				for (int i = 0; i < list.getLength(); i++) {
-					JComboBox combo = new JComboBox();
-					combo.setMaximumSize(new Dimension(100,25));
-					Node node = list.item(i);
-					combo.setBounds(100, 200, 100, 200);
-					if (node.getNodeType() == Node.ELEMENT_NODE) {
-						Element elm = (Element) node;
-						NodeList options = elm.getElementsByTagName("option");
-						defVal = Integer.parseInt(elm.getAttribute("default"));
-						Dropdown drw = new Dropdown(Integer.parseInt(elm.getAttribute("id")),defVal,options.getLength(),elm.getAttribute("label"));
-						label = new JLabel(elm.getAttribute("label"));
-						
-						for (int j = 0; j < options.getLength(); j++) {
-							Node nodeoption = options.item(j);
-							if (nodeoption.getNodeType() == Node.ELEMENT_NODE) {
-								Element opc = (Element) nodeoption;
-								combo.addItem(opc.getTextContent());
-								drw.setOption(j, 0, opc.getAttribute("value"));
-								drw.setOption(j, 1, opc.getTextContent());
-							}
+		NodeList controls = doc.getElementsByTagName("controls");
+		try{
+			
+			for(int i = 0; i < controls.getLength();i++){
+				Node control = controls.item(i);
+				if (control.getNodeType() == Node.ELEMENT_NODE) {
+					Element controlElm = (Element) control;
+					System.out.println("Bloque: "+controlElm.getAttribute("name"));
+					NodeList list = controlElm.getElementsByTagName("dropdown");
+					for (int j = 0; j < list.getLength(); j++) {
+						JComboBox combo = new JComboBox();
+						combo.setMaximumSize(new Dimension(100,25));
+						Node node = list.item(j);
+						combo.setBounds(100, 200, 100, 200);
+						if (node.getNodeType() == Node.ELEMENT_NODE) {
+							Element elm = (Element) node;
+							NodeList options = elm.getElementsByTagName("option");
+							defVal = Integer.parseInt(elm.getAttribute("default"));
+							Dropdown drw = new Dropdown(Integer.parseInt(elm.getAttribute("id")),defVal,options.getLength(),elm.getAttribute("label"));
+							label = new JLabel(elm.getAttribute("label"));
 							
-						}
-						Main.dropdowns.put(Integer.parseInt(elm.getAttribute("id")),drw);
-						combo.addActionListener(new ActionListener(){
-
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								// TODO Auto-generated method stub
-								Main.dropdowns.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal(combo.getSelectedIndex());
-								String dropdownChange="";
-								for(int i : Main.dropdowns.keySet()){
-									dropdownChange="change;;dropdown::"+Main.dropdowns.get(i).getId()+"::"+Main.dropdowns.get(i).getDefaultVal()+"::";
-									Main.server.enviaCanvi(dropdownChange);
+							for (int k = 0; k < options.getLength(); k++) {
+								Node nodeoption = options.item(k);
+								if (nodeoption.getNodeType() == Node.ELEMENT_NODE) {
+									Element opc = (Element) nodeoption;
+									combo.addItem(opc.getTextContent());
+									drw.setOption(k, 0, opc.getAttribute("value"));
+									drw.setOption(k, 1, opc.getTextContent());
 								}
+								
 							}
-							
+							Main.dropdowns.put(Integer.parseInt(elm.getAttribute("id")),drw);
+							combo.addActionListener(new ActionListener(){
+
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									// TODO Auto-generated method stub
+									Main.dropdowns.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal(combo.getSelectedIndex());
+									String dropdownChange="";
+									for(int i : Main.dropdowns.keySet()){
+										dropdownChange="change;;dropdown::"+Main.dropdowns.get(i).getId()+"::"+Main.dropdowns.get(i).getDefaultVal()+"::";
+										Main.server.enviaCanvi(dropdownChange);
+									}
+								}
+								
+							}
+								
+							);
+							if(Main.comboBoxes.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+								showError("There is a problem in the dropdown at the .xml, repeated id");
+								cont=false;
+							}
+							Main.comboBoxes.put(Integer.parseInt(elm.getAttribute("id")),combo);
 						}
-							
-						);
-						if(Main.comboBoxes.containsKey(Integer.parseInt(elm.getAttribute("id")))){
-							showError("There is a problem in the dropdown at the .xml, repeated id");
-							cont=false;
-						}
-						Main.comboBoxes.put(Integer.parseInt(elm.getAttribute("id")),combo);
+						/*JLabel label = new JLabel(node.getAttribute("label"));
+						label.setAlignmentX(Frame.CENTER_ALIGNMENT);
+						dropdown_panel.add(label);*/
+						label.setAlignmentX(Frame.CENTER_ALIGNMENT);
+						dropdown_panel.add(label);
+						combo.setSelectedIndex(defVal);
+						dropdown_panel.add(combo);
 					}
-					/*JLabel label = new JLabel(node.getAttribute("label"));
-					label.setAlignmentX(Frame.CENTER_ALIGNMENT);
-					dropdown_panel.add(label);*/
-					label.setAlignmentX(Frame.CENTER_ALIGNMENT);
-					dropdown_panel.add(label);
-					combo.setSelectedIndex(defVal);
-					dropdown_panel.add(combo);
 				}
+			}
 		}
 		catch(Exception e){
+			e.printStackTrace();
 			showError("There is a problem in the dropdown at the .xml");
 			cont=false;
 		}
@@ -354,45 +382,55 @@ public class XmlReader {
 	public void loadSensor(JPanel sensor_panel){
 		sensor_panel.removeAll();
 		Main.sensors = new HashMap<Integer, Sensor>();
-		NodeList list =	doc.getElementsByTagName("sensor");
-			try{
-				for (int i = 0; i < list.getLength(); i++) {
-					Node node = list.item(i);
-					if (node.getNodeType() == Node.ELEMENT_NODE) {
-						int randomValue = (int) (Math.random()*20-1);
-						Element elm = (Element) node;
-						JTextArea sensor = new JTextArea();
-						int id = Integer.valueOf(elm.getAttribute("id"));
-						String units = String.valueOf(elm.getAttribute("units"));
-						int low = Integer.valueOf(elm.getAttribute("thresholdlow"));
-						int high = Integer.valueOf(elm.getAttribute("thresholdhigh"));
-						sensor.setMaximumSize(new Dimension(100,25));
-						sensor.setText(randomValue+units);
-						sensor.setEditable(false);
-						if(randomValue>=low&&randomValue<=high){
-							sensor.setBackground(Color.GREEN);
+
+		NodeList controls = doc.getElementsByTagName("controls");
+		try{
+			
+			for(int i = 0; i < controls.getLength();i++){
+				Node control = controls.item(i);
+				if (control.getNodeType() == Node.ELEMENT_NODE) {
+					Element controlElm = (Element) control;
+					System.out.println("Bloque: "+controlElm.getAttribute("name"));
+					NodeList list = controlElm.getElementsByTagName("sensor");
+					for (int j = 0; j < list.getLength(); j++) {
+						Node node = list.item(j);
+						if (node.getNodeType() == Node.ELEMENT_NODE) {
+							int randomValue = (int) (Math.random()*20-1);
+							Element elm = (Element) node;
+							JTextArea sensor = new JTextArea();
+							int id = Integer.valueOf(elm.getAttribute("id"));
+							String units = String.valueOf(elm.getAttribute("units"));
+							int low = Integer.valueOf(elm.getAttribute("thresholdlow"));
+							int high = Integer.valueOf(elm.getAttribute("thresholdhigh"));
+							sensor.setMaximumSize(new Dimension(100,25));
+							sensor.setText(randomValue+units);
+							sensor.setEditable(false);
+							if(randomValue>=low&&randomValue<=high){
+								sensor.setBackground(Color.GREEN);
+							}
+							else if(randomValue<low){
+								sensor.setBackground(Color.cyan);
+							}
+							else if(randomValue>high){
+								sensor.setBackground(Color.RED);
+							}
+							Main.sensors.put(id,new Sensor(id,units,low,high,randomValue,elm.getTextContent()));
+							JLabel label = new JLabel(elm.getTextContent());
+							label.setAlignmentX(Frame.CENTER_ALIGNMENT);
+							sensor_panel.add(label);
+							sensor.setAlignmentX(Frame.CENTER_ALIGNMENT);
+							//sensor_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+							if(Main.texts.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+								showError("There is a problem in the sensor at the .xml, repeated id");
+								cont=false;
+							}
+							Main.texts.put(id,sensor);
+							sensor_panel.add(sensor);
 						}
-						else if(randomValue<low){
-							sensor.setBackground(Color.cyan);
-						}
-						else if(randomValue>high){
-							sensor.setBackground(Color.RED);
-						}
-						Main.sensors.put(id,new Sensor(id,units,low,high,randomValue,elm.getTextContent()));
-						JLabel label = new JLabel(elm.getTextContent());
-						label.setAlignmentX(Frame.CENTER_ALIGNMENT);
-						sensor_panel.add(label);
-						sensor.setAlignmentX(Frame.CENTER_ALIGNMENT);
-						//sensor_panel.add(Box.createRigidArea(new Dimension(0, 10)));
-						if(Main.texts.containsKey(Integer.parseInt(elm.getAttribute("id")))){
-							showError("There is a problem in the sensor at the .xml, repeated id");
-							cont=false;
-						}
-						Main.texts.put(id,sensor);
-						sensor_panel.add(sensor);
+						sensor_panel.repaint();
 					}
-					sensor_panel.repaint();
 				}
+			}
 		}catch(Exception e){
 			cont=false;
 			showError("There is a problem with something in the sensor at the .xml");
