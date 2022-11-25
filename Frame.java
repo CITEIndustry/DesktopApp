@@ -220,8 +220,9 @@ public class Frame extends JFrame {
 		File selectedFile = filechooser.getSelectedFile();
 		if(selectedFile.toString().contains(".xml")) {
 			filePath = filechooser.getSelectedFile().getAbsolutePath();
-            xml = new XmlReader(filePath, this);
+            xml = new XmlReader(filePath,this);
 			setContentPane(xml.loadBlocks());
+			blocks.get("name").getPanel()
 			System.out.println(filePath);
 				if(Main.comboBoxes!=null){
 					Main.comboBoxes.clear();
