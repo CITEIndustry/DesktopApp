@@ -143,7 +143,7 @@ public class Frame extends JFrame {
 		saveSnapshot.setEnabled(true);
 	}
     public void makeContentPane(){
-        contentPane.setLayout(new GridLayout(2, 0, 5, 5));
+        /*contentPane.setLayout(new GridLayout(2, 0, 5, 5));
 
 		JScrollPane scrollPane = new JScrollPane();
 		contentPane.add(scrollPane);
@@ -206,7 +206,7 @@ public class Frame extends JFrame {
 
 		JLabel sensor_label = new JLabel("Boilers' temperature");
 		sensor_header.add(sensor_label);
-		sensor_label.setVerticalAlignment(SwingConstants.CENTER);
+		sensor_label.setVerticalAlignment(SwingConstants.CENTER);*/
     }
 
     public void openFile() {
@@ -221,6 +221,7 @@ public class Frame extends JFrame {
 		if(selectedFile.toString().contains(".xml")) {
 			filePath = filechooser.getSelectedFile().getAbsolutePath();
             xml = new XmlReader(filePath, this);
+			setContentPane(xml.loadBlocks());
 			System.out.println(filePath);
 				if(Main.comboBoxes!=null){
 					Main.comboBoxes.clear();
@@ -268,7 +269,7 @@ public class Frame extends JFrame {
 			}
 		}
         else {
-        	System.out.println("Error: The file needs to be a .xml");
+        	xml.showError("The file is not .xml");
         }
 		enable();
 		setVisible(true);
