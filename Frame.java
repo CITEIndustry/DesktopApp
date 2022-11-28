@@ -17,6 +17,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -33,6 +34,7 @@ public class Frame extends JFrame {
 	private JPanel slider_panel = new JPanel();
 	private JPanel dropdown_panel = new JPanel();
 	private JPanel sensor_panel = new JPanel();
+	private JTabbedPane panelDePestanas;
 	private JMenuItem saveSnapshot;
     private static String filePath;
     private static JFileChooser filechooser = new JFileChooser(System.getProperty("user.dir"));
@@ -49,7 +51,7 @@ public class Frame extends JFrame {
         makeMenuBar();
         setJMenuBar(menubar);
         makeContentPane();
-        setContentPane(contentPane);
+        //setContentPane(contentPane);
         setVisible(true);
     }
 
@@ -207,6 +209,10 @@ public class Frame extends JFrame {
 		JLabel sensor_label = new JLabel("Boilers' temperature");
 		sensor_header.add(sensor_label);
 		sensor_label.setVerticalAlignment(SwingConstants.CENTER);*/
+		panelDePestanas = new JTabbedPane(JTabbedPane.TOP);
+		panelDePestanas.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(panelDePestanas);
+		
     }
 
     public void openFile() {
@@ -221,8 +227,14 @@ public class Frame extends JFrame {
 		if(selectedFile.toString().contains(".xml")) {
 			filePath = filechooser.getSelectedFile().getAbsolutePath();
             xml = new XmlReader(filePath,this);
-			setContentPane(xml.loadBlocks());
-			blocks.get("name").getPanel()
+			xml.loadBlocks();
+			for(String block:Main.blocks.keySet()){
+				System.out.println("bloque");
+				panelDePestanas.addTab(Main.blocks.get(block).getName(), Main.blocks.get(block).getContentPane());
+				
+			}
+			this.revalidate();
+			this.repaint();
 			System.out.println(filePath);
 				if(Main.comboBoxes!=null){
 					Main.comboBoxes.clear();
@@ -248,7 +260,7 @@ public class Frame extends JFrame {
 				if(Main.sensors!=null){
 					Main.sensors.clear();
 				}	
-			xml.loadJToggleButtons(togglebutton_panel);
+			/*xml.loadJToggleButtons(togglebutton_panel);
 			if(xml.getCont()){
 				xml.loadJSliders(slider_panel);
 			}
@@ -258,6 +270,7 @@ public class Frame extends JFrame {
 			if(xml.getCont()){
 				xml.loadSensor(sensor_panel);
 			}
+			*/
 			if(!xml.getCont()){
 				togglebutton_panel.removeAll();
 				togglebutton_panel.repaint();

@@ -34,6 +34,7 @@ public class Block implements Serializable {
         this.dropdownList = new HashMap<Integer,Dropdown>();
         this.sensorList = new HashMap<Integer,Sensor>();
         this.xml = xml;
+        loadAllComponents();
         contentPane.setBackground(new Color(204, 204, 204));
 				contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -101,6 +102,12 @@ public class Block implements Serializable {
 				JLabel sensor_label = new JLabel("Boilers' temperature");
 				sensor_header.add(sensor_label);
 				sensor_label.setVerticalAlignment(SwingConstants.CENTER);
+
+                
+                //contentPane.add(togglebutton_panel);
+                //contentPane.add(slider_panel);
+                //contentPane.add(dropdown_panel);
+                //contentPane.add(sensor_panel);
     }
 
     public String getName() {
@@ -144,7 +151,12 @@ public class Block implements Serializable {
     }
 
     public void loadAllComponents(){
-        xml.loadJToggleButtons(contentPane);
+        togglebutton_panel = xml.loadJToggleButtons(name);
+        slider_panel = xml.loadJSliders(name);
+        dropdown_panel = xml.loadJDropdown(name);
+        sensor_panel = xml.loadSensor(name);
+        contentPane.validate();
+        contentPane.repaint();
     }
 
     public JPanel getContentPane() {

@@ -21,6 +21,7 @@ public class Main extends JFrame {
 	public static Map<Integer, JSlider> jsliders = new HashMap<>();
 	public static Map<Integer, JComboBox> comboBoxes = new HashMap<>();
 	public static Map<Integer, JTextArea> texts = new HashMap<>();
+	public static Map<String, Block> blocks = new HashMap<>();
 	public static Server server;
 	//public static ArrayList<Switch> toggleButtons;
 	//public static ArrayList<Slider> sliders;
