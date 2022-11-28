@@ -13,14 +13,7 @@ import java.util.Map;
 
 public class Main extends JFrame {
 
-	public static Map<Integer, Switch> toggleButtons;
-	public static Map<Integer, Slider> sliders;
-	public static Map<Integer, Dropdown> dropdowns;
-	public static Map<Integer, Sensor> sensors;
-	public static Map<Integer, JToggleButton> switches = new HashMap<>();
-	public static Map<Integer, JSlider> jsliders = new HashMap<>();
-	public static Map<Integer, JComboBox> comboBoxes = new HashMap<>();
-	public static Map<Integer, JTextArea> texts = new HashMap<>();
+	public static Map<String, Block> blocks = new HashMap<>();
 	public static Server server;
 	//public static ArrayList<Switch> toggleButtons;
 	//public static ArrayList<Slider> sliders;

@@ -82,35 +82,39 @@ public class Server extends WebSocketServer {
             //Accions a fer quan es reben dades d'una conexio
             String[] messageList = message.split(";;");
             if(message.equals("getComponents")){
+                String blockText="";
                 String switchText="";
                 String sliderText="";
                 String comboText="";
                 String sensorText="";
-                if(Main.toggleButtons!=null||Main.sliders!=null||Main.dropdowns!=null){
-                    for(int i : Main.toggleButtons.keySet()){
-                        switchText="switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal()+"::"+Main.toggleButtons.get(i).getLabel();
-                        this.broadcast(switchText);
-                        System.out.println("frameeee");
-                    }
-                    for(int i : Main.sliders.keySet()){
-                        sliderText="slider::"+Main.sliders.get(i).getId()+"::"+Main.sliders.get(i).getDefaultVal()+"::"+Main.sliders.get(i).getMax()
-                        +"::"+Main.sliders.get(i).getMin()+"::"+Main.sliders.get(i).getStep()+"::"+Main.sliders.get(i).getLabel();
-                        this.broadcast(sliderText);
-                    }
-                    System.out.println(Main.dropdowns.size());
-                    for(int i : Main.dropdowns.keySet()){
-                        comboText="dropdown::"+Main.dropdowns.get(i).getId()+"::"+Main.dropdowns.get(i).getDefaultVal()+"::"+Main.dropdowns.get(i).getLabel()+"::";
-                        for(int j=0;j<Main.dropdowns.get(i).getOption().length;j++){
-                            comboText=comboText+Main.dropdowns.get(i).getOption()[j][0]+":"+Main.dropdowns.get(i).getOption()[j][1]+"/";
+                if(Main.blocks!=null){
+                    for(String s : Main.blocks.keySet()){
+                        blockText="block::"+Main.blocks.get(s).getName();
+                        this.broadcast(blockText);
+                        for(int i : Main.blocks.get(s).getSwitchList().keySet()){
+                            switchText="switch::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getSwitchList().get(i).getId()+"::"+Main.blocks.get(s).getSwitchList().get(i).getDefaultVal()+"::"+Main.blocks.get(s).getSwitchList().get(i).getLabel();
+                            this.broadcast(switchText);
+                            System.out.println("frameeee");
                         }
-                        this.broadcast(comboText);
-                    }
-                    for(int i : Main.sensors.keySet()){
-                        sensorText="sensor::"+Main.sensors.get(i).getId()+"::"+Main.sensors.get(i).getUnits()+"::"+Main.sensors.get(i).getThresholdlow()
-                        +"::"+Main.sensors.get(i).getThresholdhight()+"::"+Main.sensors.get(i).getValue()+"::"+Main.sensors.get(i).getLabel();
-                        this.broadcast(sensorText);
-                        System.out.println("sensor");
-                    }
+                        for(int i : Main.blocks.get(s).getSliderList().keySet()){
+                            sliderText="slider::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getSliderList().get(i).getId()+"::"+Main.blocks.get(s).getSliderList().get(i).getDefaultVal()+"::"+Main.blocks.get(s).getSliderList().get(i).getMax()
+                            +"::"+Main.blocks.get(s).getSliderList().get(i).getMin()+"::"+Main.blocks.get(s).getSliderList().get(i).getStep()+"::"+Main.blocks.get(s).getSliderList().get(i).getLabel();
+                            this.broadcast(sliderText);
+                        }
+                        for(int i : Main.blocks.get(s).getDropdownList().keySet()){
+                            comboText="dropdown::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getDropdownList().get(i).getId()+"::"+Main.blocks.get(s).getDropdownList().get(i).getDefaultVal()+"::"+Main.blocks.get(s).getDropdownList().get(i).getLabel()+"::";
+                            for(int j=0;j<Main.blocks.get(s).getDropdownList().get(i).getOption().length;j++){
+                                comboText=comboText+Main.blocks.get(s).getDropdownList().get(i).getOption()[j][0]+":"+Main.blocks.get(s).getDropdownList().get(i).getOption()[j][1]+"/";
+                            }
+                            this.broadcast(comboText);
+                        }
+                        for(int i : Main.blocks.get(s).getSensorList().keySet()){
+                            sensorText="sensor::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getSensorList().get(i).getId()+"::"+Main.blocks.get(s).getSensorList().get(i).getUnits()+"::"+Main.blocks.get(s).getSensorList().get(i).getThresholdlow()
+                            +"::"+Main.blocks.get(s).getSensorList().get(i).getThresholdhight()+"::"+Main.blocks.get(s).getSensorList().get(i).getValue()+"::"+Main.blocks.get(s).getSensorList().get(i).getLabel();
+                            this.broadcast(sensorText);
+                            System.out.println("sensor");
+                        }
+                }
                     this.broadcast("Send");
                 }
                 else{
@@ -121,18 +125,18 @@ public class Server extends WebSocketServer {
             else if(messageList[0].equalsIgnoreCase("change")){
                 String[] componentData = messageList[1].split("::");
                 if(componentData[0].equalsIgnoreCase("switch")){
-                    if(componentData[2].equalsIgnoreCase("on")){
-                        Main.switches.get(Integer.parseInt(componentData[1])).setSelected(true);
+                    if(componentData[3].equalsIgnoreCase("on")){
+                        Main.blocks.get(componentData[1]).getSwitches().get(Integer.parseInt(componentData[2])).setSelected(true);
                     }
-                    else if(componentData[2].equalsIgnoreCase("off")){
-                        Main.switches.get(Integer.parseInt(componentData[1])).setSelected(false);
+                    else if(componentData[3].equalsIgnoreCase("off")){
+                        Main.blocks.get(componentData[1]).getSwitches().get(Integer.parseInt(componentData[2])).setSelected(false);
                     }
                 }
                 else if(componentData[0].equalsIgnoreCase("slider")){
-                    Main.jsliders.get(Integer.parseInt(componentData[1])).setValue(Integer.parseInt(componentData[2]));
+                    Main.blocks.get(componentData[1]).getJsliders().get(Integer.parseInt(componentData[2])).setValue(Integer.parseInt(componentData[3]));
                 }
                 else if(componentData[0].equalsIgnoreCase("dropdown")){
-                    Main.comboBoxes.get(Integer.parseInt(componentData[1])).setSelectedIndex(Integer.parseInt(componentData[2]));
+                    Main.blocks.get(componentData[1]).getComboBoxes().get(Integer.parseInt(componentData[2])).setSelectedIndex(Integer.parseInt(componentData[3]));
                 }
             }
             else{
