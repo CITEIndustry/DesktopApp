@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.awt.GridLayout;
 
 import javax.swing.Box;
@@ -92,7 +93,7 @@ public class XmlReader {
 			}
 		}
 	}
-	public JPanel loadJToggleButtons(String blockId) {
+	public JPanel loadJToggleButtons(String blockId, Map<Integer,JToggleButton> jtb) {
 		JPanel togglebutton_panel = new JPanel();
 		togglebutton_panel.removeAll();
 		Main.toggleButtons = new HashMap<Integer, Switch>();
@@ -147,11 +148,11 @@ public class XmlReader {
 										}
 									}
 								});
-								if(Main.switches.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+								if(jtb.containsKey(Integer.parseInt(elm.getAttribute("id")))){
 									showError("There is a problem in the switch at the .xml, repeated id");
 									cont=false;
 								}
-								Main.switches.put(Integer.parseInt(elm.getAttribute("id")),button);
+								jtb.put(Integer.parseInt(elm.getAttribute("id")),button);
 								togglebutton_panel.add(Box.createRigidArea(new Dimension(0, 10)));
 								togglebutton_panel.add(button);
 							} 
@@ -167,7 +168,7 @@ public class XmlReader {
 		return togglebutton_panel;
 	}
 
-	public JPanel loadJSliders(String blockId) {
+	public JPanel loadJSliders(String blockId, Map<Integer,JSlider> jslid) {
 		JPanel slider_panel = new JPanel();
 		slider_panel.removeAll();
 		Main.sliders = new HashMap<Integer, Slider>();
@@ -217,11 +218,11 @@ public class XmlReader {
 											}
 										}
 								});
-								if(Main.jsliders.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+								if(jslid.containsKey(Integer.parseInt(elm.getAttribute("id")))){
 									showError("There is a problem in the slider at the .xml, repeated id");
 									cont=false;
 								}
-								Main.jsliders.put(Integer.parseInt(elm.getAttribute("id")),slider);
+								jslid.put(Integer.parseInt(elm.getAttribute("id")),slider);
 								JLabel label = new JLabel(elm.getTextContent());
 								label.setAlignmentX(Frame.CENTER_ALIGNMENT);
 								slider_panel.add(label);
@@ -240,7 +241,7 @@ public class XmlReader {
 		return slider_panel;
 	}
 
-	public JPanel loadJDropdown(String blockId) {
+	public JPanel loadJDropdown(String blockId, Map<Integer,JComboBox> jcb) {
 		JPanel dropdown_panel = new JPanel();
 		dropdown_panel.removeAll();
 		Main.dropdowns = new HashMap<Integer, Dropdown>();
@@ -295,11 +296,11 @@ public class XmlReader {
 								}
 									
 								);
-								if(Main.comboBoxes.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+								if(jcb.containsKey(Integer.parseInt(elm.getAttribute("id")))){
 									showError("There is a problem in the dropdown at the .xml, repeated id");
 									cont=false;
 								}
-								Main.comboBoxes.put(Integer.parseInt(elm.getAttribute("id")),combo);
+								jcb.put(Integer.parseInt(elm.getAttribute("id")),combo);
 							}
 							/*JLabel label = new JLabel(node.getAttribute("label"));
 							label.setAlignmentX(Frame.CENTER_ALIGNMENT);
@@ -322,7 +323,7 @@ public class XmlReader {
 		return dropdown_panel;
 	}
 
-	public JPanel loadSensor(String blockId){
+	public JPanel loadSensor(String blockId, Map<Integer,JTextArea> ta){
 		JPanel sensor_panel = new JPanel();
 		sensor_panel.removeAll();
 		Main.sensors = new HashMap<Integer, Sensor>();
@@ -365,11 +366,11 @@ public class XmlReader {
 								sensor_panel.add(label);
 								sensor.setAlignmentX(Frame.CENTER_ALIGNMENT);
 								//sensor_panel.add(Box.createRigidArea(new Dimension(0, 10)));
-								if(Main.texts.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+								if(ta.containsKey(Integer.parseInt(elm.getAttribute("id")))){
 									showError("There is a problem in the sensor at the .xml, repeated id");
 									cont=false;
 								}
-								Main.texts.put(id,sensor);
+								ta.put(id,sensor);
 								sensor_panel.add(sensor);
 							}
 							sensor_panel.repaint();

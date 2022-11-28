@@ -236,6 +236,7 @@ public class Frame extends JFrame {
 			this.revalidate();
 			this.repaint();
 			System.out.println(filePath);
+			/*
 				if(Main.comboBoxes!=null){
 					Main.comboBoxes.clear();
 				}
@@ -260,7 +261,7 @@ public class Frame extends JFrame {
 				if(Main.sensors!=null){
 					Main.sensors.clear();
 				}	
-			/*xml.loadJToggleButtons(togglebutton_panel);
+			xml.loadJToggleButtons(togglebutton_panel);
 			if(xml.getCont()){
 				xml.loadJSliders(slider_panel);
 			}

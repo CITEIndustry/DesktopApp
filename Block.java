@@ -6,9 +6,13 @@ import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JTextArea;
+import javax.swing.JToggleButton;
+
 import java.awt.GridLayout;
 import javax.swing.BoxLayout;
-
+import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
@@ -25,6 +29,10 @@ public class Block implements Serializable {
 	private JPanel slider_panel = new JPanel();
 	private JPanel dropdown_panel = new JPanel();
 	private JPanel sensor_panel = new JPanel();
+    public static Map<Integer, JToggleButton> switches = new HashMap<>();
+	public static Map<Integer, JSlider> jsliders = new HashMap<>();
+	public static Map<Integer, JComboBox> comboBoxes = new HashMap<>();
+	public static Map<Integer, JTextArea> texts = new HashMap<>();
     private XmlReader xml;
 
     public Block(String name, XmlReader xml){
@@ -103,6 +111,7 @@ public class Block implements Serializable {
 				sensor_header.add(sensor_label);
 				sensor_label.setVerticalAlignment(SwingConstants.CENTER);
 
+                switches.get(2).setEnabled(true);
                 
                 //contentPane.add(togglebutton_panel);
                 //contentPane.add(slider_panel);
@@ -151,10 +160,10 @@ public class Block implements Serializable {
     }
 
     public void loadAllComponents(){
-        togglebutton_panel = xml.loadJToggleButtons(name);
-        slider_panel = xml.loadJSliders(name);
-        dropdown_panel = xml.loadJDropdown(name);
-        sensor_panel = xml.loadSensor(name);
+        togglebutton_panel = xml.loadJToggleButtons(name,switches);
+        slider_panel = xml.loadJSliders(name,jsliders);
+        dropdown_panel = xml.loadJDropdown(name,comboBoxes);
+        sensor_panel = xml.loadSensor(name,texts);
         contentPane.validate();
         contentPane.repaint();
     }
@@ -205,6 +214,38 @@ public class Block implements Serializable {
 
     public void setXml(XmlReader xml) {
         this.xml = xml;
+    }
+
+    public static Map<Integer, JToggleButton> getSwitches() {
+        return switches;
+    }
+
+    public static void setSwitches(Map<Integer, JToggleButton> switches) {
+        Block.switches = switches;
+    }
+
+    public static Map<Integer, JSlider> getJsliders() {
+        return jsliders;
+    }
+
+    public static void setJsliders(Map<Integer, JSlider> jsliders) {
+        Block.jsliders = jsliders;
+    }
+
+    public static Map<Integer, JComboBox> getComboBoxes() {
+        return comboBoxes;
+    }
+
+    public static void setComboBoxes(Map<Integer, JComboBox> comboBoxes) {
+        Block.comboBoxes = comboBoxes;
+    }
+
+    public static Map<Integer, JTextArea> getTexts() {
+        return texts;
+    }
+
+    public static void setTexts(Map<Integer, JTextArea> texts) {
+        Block.texts = texts;
     }
     
     
