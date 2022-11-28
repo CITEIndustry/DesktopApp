@@ -212,7 +212,7 @@ public class XmlReader {
 										System.out.println(slider.getValue());
 										String sliderChange="";
 											for(int j : sliders.keySet()){
-												sliderChange="change;;slider::"+sliders.get(j).getId()+"::"+sliders.get(j).getDefaultVal();
+												sliderChange="change;;slider::"+blockId+"::"+sliders.get(j).getId()+"::"+sliders.get(j).getDefaultVal();
 												Main.server.enviaCanvi(sliderChange);
 											}
 										}
@@ -287,7 +287,7 @@ public class XmlReader {
 										dropdowns.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal(combo.getSelectedIndex());
 										String dropdownChange="";
 										for(int i : dropdowns.keySet()){
-											dropdownChange="change;;dropdown::"+dropdowns.get(i).getId()+"::"+dropdowns.get(i).getDefaultVal()+"::";
+											dropdownChange="change;;dropdown::"+blockId+"::"+dropdowns.get(i).getId()+"::"+dropdowns.get(i).getDefaultVal()+"::";
 											Main.server.enviaCanvi(dropdownChange);
 										}
 									}

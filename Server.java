@@ -128,7 +128,7 @@ public class Server extends WebSocketServer {
                     if(componentData[3].equalsIgnoreCase("on")){
                         Main.blocks.get(componentData[1]).getSwitches().get(Integer.parseInt(componentData[2])).setSelected(true);
                     }
-                    else if(componentData[2].equalsIgnoreCase("off")){
+                    else if(componentData[3].equalsIgnoreCase("off")){
                         Main.blocks.get(componentData[1]).getSwitches().get(Integer.parseInt(componentData[2])).setSelected(false);
                     }
                 }
