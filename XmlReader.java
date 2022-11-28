@@ -148,7 +148,7 @@ public class XmlReader {
 										}
 									}
 								});
-								if(jtb.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+								if(controlElm.getAttribute("name").equals(blockId)&&jtb.containsKey(Integer.parseInt(elm.getAttribute("id")))){
 									showError("There is a problem in the switch at the .xml, repeated id");
 									cont=false;
 								}
@@ -217,7 +217,7 @@ public class XmlReader {
 											}
 										}
 								});
-								if(jslid.containsKey(Integer.parseInt(elm.getAttribute("id")))){
+								if(controlElm.getAttribute("name").equals(blockId)&&jslid.containsKey(Integer.parseInt(elm.getAttribute("id")))){
 									showError("There is a problem in the slider at the .xml, repeated id");
 									cont=false;
 								}

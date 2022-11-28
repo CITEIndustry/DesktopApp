@@ -189,46 +189,11 @@ public class Frame extends JFrame {
 			}
 			this.revalidate();
 			this.repaint();
-			//Main.blocks.get("block1").getSwitches().get(2).setSelected(true);
-			System.out.println(filePath);
-			/*
-				if(Main.comboBoxes!=null){
-					Main.comboBoxes.clear();
-				}
-				if(Main.sliders!=null){
-					Main.switches.clear();
-				}
-				if(Main.jsliders!=null){
-					Main.jsliders.clear();
-				}
-				if(Main.sliders!=null){
-					Main.sliders.clear();
-				}
-				if(Main.dropdowns!=null){
-					Main.dropdowns.clear();
-				}
-				if(Main.comboBoxes!=null){
-					Main.comboBoxes.clear();
-				}
-				if(Main.texts!=null){
-					Main.texts.clear();
-				}
-				if(Main.sensors!=null){
-					Main.sensors.clear();
-				}	
-			xml.loadJToggleButtons(togglebutton_panel);
-			if(xml.getCont()){
-				xml.loadJSliders(slider_panel);
-			}
-			if(xml.getCont()){
-				xml.loadJDropdown(dropdown_panel);
-			}
-			if(xml.getCont()){
-				xml.loadSensor(sensor_panel);
-			}
-			*/
 			if(!xml.getCont()){
 				for(String s: Main.blocks.keySet()){
+					panelDePestanas = new JTabbedPane(JTabbedPane.TOP);
+					panelDePestanas.setBorder(new EmptyBorder(5, 5, 5, 5));
+					setContentPane(panelDePestanas);
 					Main.blocks.get(s).getTogglebutton_panel().removeAll();
 					Main.blocks.get(s).getTogglebutton_panel().repaint();
 					Main.blocks.get(s).getSlider_panel().removeAll();
