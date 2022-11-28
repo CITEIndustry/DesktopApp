@@ -1,10 +1,17 @@
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.GridBagLayout;
 import java.io.File;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.awt.GridLayout;
 
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -14,6 +21,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -30,10 +38,12 @@ public class Frame extends JFrame {
 	private JPanel slider_panel = new JPanel();
 	private JPanel dropdown_panel = new JPanel();
 	private JPanel sensor_panel = new JPanel();
+	private JTabbedPane panelDePestanas;
+	private JMenuItem saveSnapshot;
     private static String filePath;
     private static JFileChooser filechooser = new JFileChooser(System.getProperty("user.dir"));
     private static Document doc;
-    private XmlReader xml;
+    private XmlReader xml = new XmlReader();;
 
     public Frame(){
         this.setTitle("Desktop APP");
@@ -45,7 +55,7 @@ public class Frame extends JFrame {
         makeMenuBar();
         setJMenuBar(menubar);
         makeContentPane();
-        setContentPane(contentPane);
+        //setContentPane(contentPane);
         setVisible(true);
     }
 
@@ -68,73 +78,164 @@ public class Frame extends JFrame {
 		
 		menu = new JMenu("Views");
 		menubar.add(menu);
+
+		menu = new JMenu("Snapshots");
+		menubar.add(menu);
+		saveSnapshot = new JMenuItem("Save snapshot");
+		saveSnapshot.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String basePath = System.getProperty("user.dir") + File.separator;
+				String filePath = basePath + "databaseIndustrialUser.db";
+            	Connection connDBUser=UtilsSQLite.connect(filePath);
+				UtilsSQLite.connect(filePath);
+				String user = JOptionPane.showInputDialog("Type your username:");
+				ResultSet userId = UtilsSQLite.querySelect(connDBUser, "SELECT id FROM user where name ='"+user+"';");
+				int usId = 0;
+				try {
+					usId = userId.getInt("id");
+					UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO snapshot (day,idUser) VALUES (datetime('now','localtime'),"+usId+");");
+				} catch (SQLException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+				if(usId!=0){
+					ResultSet rsId = UtilsSQLite.querySelect(connDBUser, "SELECT id FROM snapshot ORDER BY id desc;");
+					try {
+						if(Main.blocks!=null){
+							for(String s : Main.blocks.keySet()){
+								String componentText="block::"+Main.blocks.get(s).getName();
+								System.out.println("sihaybloke");
+								UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+																+componentText+"\","+rsId.getInt("id")+");");
+								for(int i : Main.blocks.get(s).getSwitchList().keySet()){
+									componentText="switch::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getSwitchList().get(i).getId()+"::"+Main.blocks.get(s).getSwitchList().get(i).getDefaultVal()+"::"+Main.blocks.get(s).getSwitchList().get(i).getLabel();
+									UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+																+componentText+"\","+rsId.getInt("id")+");");
+								}
+								for(int i : Main.blocks.get(s).getSliderList().keySet()){
+									componentText="slider::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getSliderList().get(i).getId()+"::"+Main.blocks.get(s).getSliderList().get(i).getDefaultVal()+"::"+Main.blocks.get(s).getSliderList().get(i).getMax()
+									+"::"+Main.blocks.get(s).getSliderList().get(i).getMin()+"::"+Main.blocks.get(s).getSliderList().get(i).getStep()+"::"+Main.blocks.get(s).getSliderList().get(i).getLabel();
+									UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+																+componentText+"\","+rsId.getInt("id")+");");
+								}
+								for(int i : Main.blocks.get(s).getDropdownList().keySet()){
+									componentText="dropdown::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getDropdownList().get(i).getId()+"::"+Main.blocks.get(s).getDropdownList().get(i).getDefaultVal()+"::"+Main.blocks.get(s).getDropdownList().get(i).getLabel()+"::";
+									for(int j=0;j<Main.blocks.get(s).getDropdownList().get(i).getOption().length;j++){
+										componentText=componentText+Main.blocks.get(s).getDropdownList().get(i).getOption()[j][0]+":"+Main.blocks.get(s).getDropdownList().get(i).getOption()[j][1]+"/";
+									}
+									UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+									+componentText+"\","+rsId.getInt("id")+");");
+								}
+								for(int i : Main.blocks.get(s).getSensorList().keySet()){
+									componentText="sensor::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getSensorList().get(i).getId()+"::"+Main.blocks.get(s).getSensorList().get(i).getUnits()+"::"+Main.blocks.get(s).getSensorList().get(i).getThresholdlow()
+									+"::"+Main.blocks.get(s).getSensorList().get(i).getThresholdhight()+"::"+Main.blocks.get(s).getSensorList().get(i).getValue()+"::"+Main.blocks.get(s).getSensorList().get(i).getLabel();
+									UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+									+componentText+"\","+rsId.getInt("id")+");");
+								}
+							}
+					}
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			UtilsSQLite.disconnect(connDBUser);
+			}
+			
+		});
+		saveSnapshot.setEnabled(false);
+		menu.add(saveSnapshot);
+		JMenuItem loadSnapshot = new JMenuItem("Load snapshot");
+		loadSnapshot.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String basePath = System.getProperty("user.dir") + File.separator;
+				String filePath = basePath + "databaseIndustrialUser.db";
+				ArrayList<String> snapshots = new ArrayList<String>();
+				Connection connDBUser=UtilsSQLite.connect(filePath);
+				String user = JOptionPane.showInputDialog("Type your username:");
+				ResultSet userId = UtilsSQLite.querySelect(connDBUser, "SELECT id FROM user where name ='"+user+"';");
+				int usId = -1;
+				try {
+					usId = userId.getInt("id");
+					System.out.println(usId);
+					if(usId<=0){
+						throw new Exception();
+					}
+				} catch (Exception e2) {
+					// TODO Auto-generated catch block
+					showError("User not valid");
+				}
+				if(usId!=0){
+					Main.blocks.clear();
+					panelDePestanas=new JTabbedPane();
+					panelDePestanas.setBorder(new EmptyBorder(5, 5, 5, 5));
+					setContentPane(panelDePestanas);
+					System.out.println("me ejecurototototo");
+					ResultSet rs = UtilsSQLite.querySelect(connDBUser, "SELECT id, day FROM snapshot WHERE idUser="+usId+";");
+					try{
+						while(rs.next()){
+							//System.out.println(rs.getString(1));
+							snapshots.add(rs.getString(1)+": "+rs.getString(2));
+						}
+					}catch(Exception exc){
+						showError("Cannot load the selected snapshot");
+						exc.printStackTrace();
+					}
+					//Loading all
+					String idSnapshot = showSelector(snapshots);
+					rs = UtilsSQLite.querySelect(connDBUser, "SELECT component FROM components WHERE idSnapshot="+idSnapshot);
+					String[] componentsData;
+					//Loading all blocks
+					try{
+						while(rs.next()){
+							//System.out.println(rs.getString(1));
+							componentsData = rs.getString(1).split("::");
+							if (componentsData[0].equals("block")){
+								Main.blocks.put(componentsData[1], new Block(componentsData[1],xml));
+								panelDePestanas.addTab(componentsData[1],Main.blocks.get(componentsData[1]).getContentPane());
+								
+							}
+						}
+					}catch(Exception exc){
+						showError("Cannot load the selected snapshot");
+						exc.printStackTrace();
+					}
+					//Loading all components
+					try{
+						rs = UtilsSQLite.querySelect(connDBUser, "SELECT component FROM components WHERE idSnapshot="+idSnapshot);
+						while(rs.next()){
+							System.out.println(rs.getString(1));
+							componentsData = rs.getString(1).split("::");
+							Main.blocks.get(componentsData[1]).loadSnapshotComponent(componentsData);
+						}
+						for(String block:Main.blocks.keySet()){
+							Main.blocks.get(block).updateAllPanels();
+						}
+					}catch(Exception exc){
+						showError("Cannot load the selected snapshot");
+					}
+				}
+				UtilsSQLite.disconnect(connDBUser);
+				
+			}
+
+		});
+		menu.add(loadSnapshot);
     }
-
+	public void enable(){
+		saveSnapshot.setEnabled(true);
+	}
     public void makeContentPane(){
-        contentPane.setLayout(new GridLayout(2, 0, 5, 5));
-
-		JScrollPane scrollPane = new JScrollPane();
-		contentPane.add(scrollPane);
-		togglebutton_panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-
-		scrollPane.setViewportView(togglebutton_panel);
-		togglebutton_panel.setLayout(new BoxLayout(togglebutton_panel, BoxLayout.Y_AXIS));
-
-		JPanel togglebutton_header = new JPanel();
-		togglebutton_header.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		togglebutton_header.setBackground(new Color(194, 139, 217));
-		scrollPane.setColumnHeaderView(togglebutton_header);
-
-		JLabel togglebutton_label = new JLabel("Lights");
-		togglebutton_header.add(togglebutton_label);
-		togglebutton_label.setVerticalAlignment(SwingConstants.CENTER);
+		panelDePestanas = new JTabbedPane(JTabbedPane.TOP);
+		panelDePestanas.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(panelDePestanas);
 		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		contentPane.add(scrollPane_1);
-
-		JPanel slider_header = new JPanel();
-		slider_header.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		slider_header.setBackground(new Color(194, 139, 217));
-		scrollPane_1.setColumnHeaderView(slider_header);
-
-		JLabel slider_label = new JLabel("Boilers' power");
-		slider_header.add(slider_label);
-		slider_panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-
-		scrollPane_1.setViewportView(slider_panel);
-		slider_panel.setLayout(new BoxLayout(slider_panel, BoxLayout.Y_AXIS));
-
-		JScrollPane scrollPane_2 = new JScrollPane();
-		contentPane.add(scrollPane_2);
-		dropdown_panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-
-		scrollPane_2.setViewportView(dropdown_panel);
-		dropdown_panel.setLayout(new BoxLayout(dropdown_panel, BoxLayout.Y_AXIS));
-
-		JPanel dropdown_header = new JPanel();
-		dropdown_header.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		dropdown_header.setBackground(new Color(194, 139, 217));
-		scrollPane_2.setColumnHeaderView(dropdown_header);
-
-		JLabel dropdown_label = new JLabel("Mode");
-		dropdown_header.add(dropdown_label);
-		dropdown_label.setVerticalAlignment(SwingConstants.CENTER);
-
-		JScrollPane scrollPane_3 = new JScrollPane();
-		contentPane.add(scrollPane_3);
-		sensor_panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-
-		scrollPane_3.setViewportView(sensor_panel);
-		sensor_panel.setLayout(new BoxLayout(sensor_panel, BoxLayout.Y_AXIS));
-
-		JPanel sensor_header = new JPanel();
-		sensor_header.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		sensor_header.setBackground(new Color(194, 139, 217));
-		scrollPane_3.setColumnHeaderView(sensor_header);
-
-		JLabel sensor_label = new JLabel("Boilers' temperature");
-		sensor_header.add(sensor_label);
-		sensor_label.setVerticalAlignment(SwingConstants.CENTER);
     }
 
     public void openFile() {
@@ -148,34 +249,70 @@ public class Frame extends JFrame {
 		File selectedFile = filechooser.getSelectedFile();
 		if(selectedFile.toString().contains(".xml")) {
 			filePath = filechooser.getSelectedFile().getAbsolutePath();
-            xml = new XmlReader(filePath, this);
-			System.out.println(filePath);
-			xml.loadJToggleButtons(togglebutton_panel);
-			if(xml.getCont()){
-				xml.loadJSliders(slider_panel);
+			if(Main.blocks!=null){
+				panelDePestanas = new JTabbedPane(JTabbedPane.TOP);
+				panelDePestanas.setBorder(new EmptyBorder(5, 5, 5, 5));
+				setContentPane(panelDePestanas);
+				for(String s: Main.blocks.keySet()){
+					Main.blocks.get(s).getTogglebutton_panel().removeAll();
+					Main.blocks.get(s).getTogglebutton_panel().repaint();
+					Main.blocks.get(s).getSlider_panel().removeAll();
+					Main.blocks.get(s).getSlider_panel().repaint();
+					Main.blocks.get(s).getDropdown_panel().removeAll();
+					Main.blocks.get(s).getDropdown_panel().repaint();
+					Main.blocks.get(s).getSensor_panel().removeAll();
+					Main.blocks.get(s).getSensor_panel().repaint();
+				}
 			}
-			if(xml.getCont()){
-				xml.loadJDropdown(dropdown_panel);
+            xml = new XmlReader(filePath,this);
+			xml.loadBlocks();
+			for(String block:Main.blocks.keySet()){
+				System.out.println("bloque");
+				panelDePestanas.addTab(Main.blocks.get(block).getName(), Main.blocks.get(block).getContentPane());
+				
 			}
-			if(xml.getCont()){
-				xml.loadSensor(sensor_panel);
-			}
+			this.revalidate();
+			this.repaint();
 			if(!xml.getCont()){
-				togglebutton_panel.removeAll();
-				togglebutton_panel.repaint();
-				slider_panel.removeAll();
-				slider_panel.repaint();
-				dropdown_panel.removeAll();
-				dropdown_panel.repaint();
-				sensor_panel.removeAll();
-				sensor_panel.repaint();
+				for(String s: Main.blocks.keySet()){
+					panelDePestanas = new JTabbedPane(JTabbedPane.TOP);
+					panelDePestanas.setBorder(new EmptyBorder(5, 5, 5, 5));
+					setContentPane(panelDePestanas);
+					Main.blocks.get(s).getTogglebutton_panel().removeAll();
+					Main.blocks.get(s).getTogglebutton_panel().repaint();
+					Main.blocks.get(s).getSlider_panel().removeAll();
+					Main.blocks.get(s).getSlider_panel().repaint();
+					Main.blocks.get(s).getDropdown_panel().removeAll();
+					Main.blocks.get(s).getDropdown_panel().repaint();
+					Main.blocks.get(s).getSensor_panel().removeAll();
+					Main.blocks.get(s).getSensor_panel().repaint();
+				}
 			}
 		}
         else {
-        	System.out.println("Error: The file needs to be a .xml");
+        	xml.showError("The file is not .xml");
         }
+		enable();
 		setVisible(true);
 	}
+	public void showError(String message){  
+		JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+	public String showSelector(ArrayList<String> snapshots){
+		System.out.println(snapshots.size());
+		JPanel panel = new JPanel(new GridBagLayout());
+		String[] sports = new String[snapshots.size()];
+		for(int i = 0; i<snapshots.size();i++){
+			sports[i]=snapshots.get(i);
+		}
+		JComboBox comboBox = new JComboBox(sports); comboBox.setSelectedIndex(0);
+		JOptionPane.showMessageDialog(null, comboBox, "Select snapshot",
+		JOptionPane.QUESTION_MESSAGE);
+		panel.add(comboBox);
+		
+		return comboBox.getSelectedItem().toString().split(":")[0];
+	}
+	
 
     
     
