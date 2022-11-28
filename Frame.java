@@ -100,35 +100,38 @@ public class Frame extends JFrame {
 				if(usId!=0){
 					ResultSet rsId = UtilsSQLite.querySelect(connDBUser, "SELECT id FROM snapshot ORDER BY id desc;");
 					try {
-						String componentText="";
-						if(Main.toggleButtons!=null||Main.sliders!=null||Main.dropdowns!=null){
-							for(int i : Main.toggleButtons.keySet()){
-								componentText="switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal()+"::"+Main.toggleButtons.get(i).getLabel();
+						if(Main.blocks!=null){
+							for(String s : Main.blocks.keySet()){
+								String componentText="block::"+Main.blocks.get(s).getName();
 								UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
-															+componentText+"\","+rsId.getInt("id")+");");
-							}
-							for(int i : Main.sliders.keySet()){
-								componentText="slider::"+Main.sliders.get(i).getId()+"::"+Main.sliders.get(i).getDefaultVal()+"::"+Main.sliders.get(i).getMax()
-								+"::"+Main.sliders.get(i).getMin()+"::"+Main.sliders.get(i).getStep()+"::"+Main.sliders.get(i).getLabel();
-								UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
-															+componentText+"\","+rsId.getInt("id")+");");
-							}
-							System.out.println(Main.dropdowns.size());
-							for(int i : Main.dropdowns.keySet()){
-								componentText="dropdown::"+Main.dropdowns.get(i).getId()+"::"+Main.dropdowns.get(i).getDefaultVal()+"::"+Main.dropdowns.get(i).getLabel()+"::";
-								for(int j=0;j<Main.dropdowns.get(i).getOption().length;j++){
-									componentText=componentText+Main.dropdowns.get(i).getOption()[j][0]+":"+Main.dropdowns.get(i).getOption()[j][1]+"/";
+																+componentText+"\","+rsId.getInt("id")+");");
+								for(int i : Main.blocks.get(s).getSwitchList().keySet()){
+									componentText="switch::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getSwitchList().get(i).getId()+"::"+Main.blocks.get(s).getSwitchList().get(i).getDefaultVal()+"::"+Main.blocks.get(s).getSwitchList().get(i).getLabel();
+									UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+																+componentText+"\","+rsId.getInt("id")+");");
 								}
-								UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
-								+componentText+"\","+rsId.getInt("id")+");");
+								for(int i : Main.blocks.get(s).getSliderList().keySet()){
+									componentText="slider::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getSliderList().get(i).getId()+"::"+Main.blocks.get(s).getSliderList().get(i).getDefaultVal()+"::"+Main.blocks.get(s).getSliderList().get(i).getMax()
+									+"::"+Main.blocks.get(s).getSliderList().get(i).getMin()+"::"+Main.blocks.get(s).getSliderList().get(i).getStep()+"::"+Main.blocks.get(s).getSliderList().get(i).getLabel();
+									UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+																+componentText+"\","+rsId.getInt("id")+");");
+								}
+								for(int i : Main.blocks.get(s).getDropdownList().keySet()){
+									componentText="dropdown::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getDropdownList().get(i).getId()+"::"+Main.blocks.get(s).getDropdownList().get(i).getDefaultVal()+"::"+Main.blocks.get(s).getDropdownList().get(i).getLabel()+"::";
+									for(int j=0;j<Main.blocks.get(s).getDropdownList().get(i).getOption().length;j++){
+										componentText=componentText+Main.blocks.get(s).getDropdownList().get(i).getOption()[j][0]+":"+Main.blocks.get(s).getDropdownList().get(i).getOption()[j][1]+"/";
+									}
+									UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+									+componentText+"\","+rsId.getInt("id")+");");
+								}
+								for(int i : Main.blocks.get(s).getSensorList().keySet()){
+									componentText="sensor::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getSensorList().get(i).getId()+"::"+Main.blocks.get(s).getSensorList().get(i).getUnits()+"::"+Main.blocks.get(s).getSensorList().get(i).getThresholdlow()
+									+"::"+Main.blocks.get(s).getSensorList().get(i).getThresholdhight()+"::"+Main.blocks.get(s).getSensorList().get(i).getValue()+"::"+Main.blocks.get(s).getSensorList().get(i).getLabel();
+									UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+									+componentText+"\","+rsId.getInt("id")+");");
+								}
 							}
-							for(int i : Main.sensors.keySet()){
-								componentText="sensor::"+Main.sensors.get(i).getId()+"::"+Main.sensors.get(i).getUnits()+"::"+Main.sensors.get(i).getThresholdlow()
-								+"::"+Main.sensors.get(i).getThresholdhight()+"::"+Main.sensors.get(i).getValue()+"::"+Main.sensors.get(i).getLabel();
-								UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
-								+componentText+"\","+rsId.getInt("id")+");");
-							}
-						}
+					}
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -145,70 +148,6 @@ public class Frame extends JFrame {
 		saveSnapshot.setEnabled(true);
 	}
     public void makeContentPane(){
-        /*contentPane.setLayout(new GridLayout(2, 0, 5, 5));
-
-		JScrollPane scrollPane = new JScrollPane();
-		contentPane.add(scrollPane);
-		togglebutton_panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-
-		scrollPane.setViewportView(togglebutton_panel);
-		togglebutton_panel.setLayout(new BoxLayout(togglebutton_panel, BoxLayout.Y_AXIS));
-
-		JPanel togglebutton_header = new JPanel();
-		togglebutton_header.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		togglebutton_header.setBackground(new Color(194, 139, 217));
-		scrollPane.setColumnHeaderView(togglebutton_header);
-
-		JLabel togglebutton_label = new JLabel("Lights");
-		togglebutton_header.add(togglebutton_label);
-		togglebutton_label.setVerticalAlignment(SwingConstants.CENTER);
-		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		contentPane.add(scrollPane_1);
-
-		JPanel slider_header = new JPanel();
-		slider_header.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		slider_header.setBackground(new Color(194, 139, 217));
-		scrollPane_1.setColumnHeaderView(slider_header);
-
-		JLabel slider_label = new JLabel("Boilers' power");
-		slider_header.add(slider_label);
-		slider_panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-
-		scrollPane_1.setViewportView(slider_panel);
-		slider_panel.setLayout(new BoxLayout(slider_panel, BoxLayout.Y_AXIS));
-
-		JScrollPane scrollPane_2 = new JScrollPane();
-		contentPane.add(scrollPane_2);
-		dropdown_panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-
-		scrollPane_2.setViewportView(dropdown_panel);
-		dropdown_panel.setLayout(new BoxLayout(dropdown_panel, BoxLayout.Y_AXIS));
-
-		JPanel dropdown_header = new JPanel();
-		dropdown_header.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		dropdown_header.setBackground(new Color(194, 139, 217));
-		scrollPane_2.setColumnHeaderView(dropdown_header);
-
-		JLabel dropdown_label = new JLabel("Mode");
-		dropdown_header.add(dropdown_label);
-		dropdown_label.setVerticalAlignment(SwingConstants.CENTER);
-
-		JScrollPane scrollPane_3 = new JScrollPane();
-		contentPane.add(scrollPane_3);
-		sensor_panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-
-		scrollPane_3.setViewportView(sensor_panel);
-		sensor_panel.setLayout(new BoxLayout(sensor_panel, BoxLayout.Y_AXIS));
-
-		JPanel sensor_header = new JPanel();
-		sensor_header.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		sensor_header.setBackground(new Color(194, 139, 217));
-		scrollPane_3.setColumnHeaderView(sensor_header);
-
-		JLabel sensor_label = new JLabel("Boilers' temperature");
-		sensor_header.add(sensor_label);
-		sensor_label.setVerticalAlignment(SwingConstants.CENTER);*/
 		panelDePestanas = new JTabbedPane(JTabbedPane.TOP);
 		panelDePestanas.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(panelDePestanas);
@@ -226,6 +165,21 @@ public class Frame extends JFrame {
 		File selectedFile = filechooser.getSelectedFile();
 		if(selectedFile.toString().contains(".xml")) {
 			filePath = filechooser.getSelectedFile().getAbsolutePath();
+			if(Main.blocks!=null){
+				panelDePestanas = new JTabbedPane(JTabbedPane.TOP);
+				panelDePestanas.setBorder(new EmptyBorder(5, 5, 5, 5));
+				setContentPane(panelDePestanas);
+				for(String s: Main.blocks.keySet()){
+					Main.blocks.get(s).getTogglebutton_panel().removeAll();
+					Main.blocks.get(s).getTogglebutton_panel().repaint();
+					Main.blocks.get(s).getSlider_panel().removeAll();
+					Main.blocks.get(s).getSlider_panel().repaint();
+					Main.blocks.get(s).getDropdown_panel().removeAll();
+					Main.blocks.get(s).getDropdown_panel().repaint();
+					Main.blocks.get(s).getSensor_panel().removeAll();
+					Main.blocks.get(s).getSensor_panel().repaint();
+				}
+			}
             xml = new XmlReader(filePath,this);
 			xml.loadBlocks();
 			for(String block:Main.blocks.keySet()){
@@ -235,7 +189,7 @@ public class Frame extends JFrame {
 			}
 			this.revalidate();
 			this.repaint();
-			Main.blocks.get("block1").getSwitches().get(2).setSelected(true);
+			//Main.blocks.get("block1").getSwitches().get(2).setSelected(true);
 			System.out.println(filePath);
 			/*
 				if(Main.comboBoxes!=null){
@@ -274,14 +228,16 @@ public class Frame extends JFrame {
 			}
 			*/
 			if(!xml.getCont()){
-				togglebutton_panel.removeAll();
-				togglebutton_panel.repaint();
-				slider_panel.removeAll();
-				slider_panel.repaint();
-				dropdown_panel.removeAll();
-				dropdown_panel.repaint();
-				sensor_panel.removeAll();
-				sensor_panel.repaint();
+				for(String s: Main.blocks.keySet()){
+					Main.blocks.get(s).getTogglebutton_panel().removeAll();
+					Main.blocks.get(s).getTogglebutton_panel().repaint();
+					Main.blocks.get(s).getSlider_panel().removeAll();
+					Main.blocks.get(s).getSlider_panel().repaint();
+					Main.blocks.get(s).getDropdown_panel().removeAll();
+					Main.blocks.get(s).getDropdown_panel().repaint();
+					Main.blocks.get(s).getSensor_panel().removeAll();
+					Main.blocks.get(s).getSensor_panel().repaint();
+				}
 			}
 		}
         else {

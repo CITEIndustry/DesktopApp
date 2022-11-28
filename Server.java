@@ -88,12 +88,10 @@ public class Server extends WebSocketServer {
                 String comboText="";
                 String sensorText="";
                 if(Main.blocks!=null){
-                    System.out.println("hay bloques");
                     for(String s : Main.blocks.keySet()){
                         blockText="block::"+Main.blocks.get(s).getName();
                         this.broadcast(blockText);
                         for(int i : Main.blocks.get(s).getSwitchList().keySet()){
-                            System.out.println("envio switch");
                             switchText="switch::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getSwitchList().get(i).getId()+"::"+Main.blocks.get(s).getSwitchList().get(i).getDefaultVal()+"::"+Main.blocks.get(s).getSwitchList().get(i).getLabel();
                             this.broadcast(switchText);
                             System.out.println("frameeee");

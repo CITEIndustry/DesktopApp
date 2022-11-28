@@ -143,7 +143,7 @@ public class XmlReader {
 										
 										}
 										for(int i : toggleButtons.keySet()){
-											switchChange="change;;switch::"+toggleButtons.get(i).getId()+"::"+toggleButtons.get(i).getDefaultVal();
+											switchChange="change;;switch::"+blockId+"::"+toggleButtons.get(i).getId()+"::"+toggleButtons.get(i).getDefaultVal();
 											Main.server.enviaCanvi(switchChange);
 										}
 									}
