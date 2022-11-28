@@ -82,12 +82,15 @@ public class Server extends WebSocketServer {
             //Accions a fer quan es reben dades d'una conexio
             String[] messageList = message.split(";;");
             if(message.equals("getComponents")){
+                String blockText="";
                 String switchText="";
                 String sliderText="";
                 String comboText="";
                 String sensorText="";
                 if(Main.blocks!=null){
                     for(String s : Main.blocks.keySet()){
+                        blockText="block::"+Main.blocks.get(s).getName();
+                        this.broadcast(blockText);
                         for(int i : Main.blocks.get(s).getSwitchList().keySet()){
                             switchText="switch::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getSwitchList().get(i).getId()+"::"+Main.blocks.get(s).getSwitchList().get(i).getDefaultVal()+"::"+Main.blocks.get(s).getSwitchList().get(i).getLabel();
                             this.broadcast(switchText);
