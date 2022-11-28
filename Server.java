@@ -122,18 +122,18 @@ public class Server extends WebSocketServer {
             else if(messageList[0].equalsIgnoreCase("change")){
                 String[] componentData = messageList[1].split("::");
                 if(componentData[0].equalsIgnoreCase("switch")){
-                    if(componentData[2].equalsIgnoreCase("on")){
-                        Main.switches.get(Integer.parseInt(componentData[1])).setSelected(true);
+                    if(componentData[3].equalsIgnoreCase("on")){
+                        Main.blocks.get(componentData[1]).getSwitches().get(Integer.parseInt(componentData[2])).setSelected(true);
                     }
                     else if(componentData[2].equalsIgnoreCase("off")){
-                        Main.switches.get(Integer.parseInt(componentData[1])).setSelected(false);
+                        Main.blocks.get(componentData[1]).getSwitches().get(Integer.parseInt(componentData[2])).setSelected(false);
                     }
                 }
                 else if(componentData[0].equalsIgnoreCase("slider")){
-                    Main.jsliders.get(Integer.parseInt(componentData[1])).setValue(Integer.parseInt(componentData[2]));
+                    Main.blocks.get(componentData[1]).getJsliders().get(Integer.parseInt(componentData[2])).setValue(Integer.parseInt(componentData[3]));
                 }
                 else if(componentData[0].equalsIgnoreCase("dropdown")){
-                    Main.comboBoxes.get(Integer.parseInt(componentData[1])).setSelectedIndex(Integer.parseInt(componentData[2]));
+                    Main.blocks.get(componentData[1]).getComboBoxes().get(Integer.parseInt(componentData[2])).setSelectedIndex(Integer.parseInt(componentData[3]));
                 }
             }
             else{
