@@ -1,5 +1,5 @@
 <root>
-    <controls name="block1">
+    <controls name="Boilers">
         <switch id="0" default="on">Reception Light</switch>
         <switch id="1" default="on">Office Light</switch>
         <switch id="2" default="off">Boilers Light</switch>
@@ -28,7 +28,7 @@
         <sensor id="4" units="ºC" thresholdlow="0" thresholdhigh="4">Boiler 2</sensor>
         <sensor id="5" units="ºC" thresholdlow="11" thresholdhigh="15">Boiler 3</sensor>
     </controls>
-    <controls name="block2">
+    <controls name="Room">
         <switch id="3" default="on">Reception Light</switch>
         <slider id="4" default="5" min="0" max="10" step="1">Boiler 1</slider>
         <dropdown id="5" default="2" label="Boiler 2">
@@ -39,7 +39,7 @@
         </dropdown>
         <sensor id="6" units="ºC" thresholdlow="5" thresholdhigh="10">Boiler 1</sensor>
     </controls>
-     <controls name="block3">
+     <controls name="Reception">
         <switch id="3" default="on">Reception Light</switch>
         <slider id="4" default="5" min="0" max="10" step="1">Boiler 1</slider>
         <dropdown id="5" default="2" label="Boiler 2">

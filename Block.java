@@ -1,4 +1,7 @@
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +17,8 @@ import java.awt.GridLayout;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 
@@ -42,7 +47,9 @@ public class Block implements Serializable {
         this.dropdownList = new HashMap<Integer,Dropdown>();
         this.sensorList = new HashMap<Integer,Sensor>();
         this.xml = xml;
-        loadAllComponents();
+        if(!xml.isEmpty()){
+            loadAllComponents();
+        }
         contentPane.setBackground(new Color(204, 204, 204));
 				contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -166,6 +173,158 @@ public class Block implements Serializable {
         sensor_panel = xml.loadSensor(name,texts, sensorList);
         contentPane.validate();
         contentPane.repaint();
+    }
+
+    public void loadSnapshotComponent(String[] value){
+        //Switch
+        if (value[0].equals("switch")){
+            switchList.put(Integer.parseInt(value[2]), new Switch(Integer.parseInt(value[2]), value[4], value[3]));
+            JToggleButton jtb = new JToggleButton(value[4]);
+            if(value[3].equals("on")){
+                jtb.setSelected(true);
+                System.out.println("añado");
+            }else{
+                jtb.setSelected(false);
+            }
+            JLabel label = new JLabel(value[4]);
+			label.setAlignmentX(Frame.CENTER_ALIGNMENT);
+            jtb.setAlignmentX(Frame.CENTER_ALIGNMENT);
+            switches.put(Integer.parseInt(value[2]), jtb);
+            jtb.addChangeListener(new ChangeListener() {
+				
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    // TODO Auto-generated method stub
+                    String switchChange="";
+                    if(jtb.isSelected()){
+                        switchList.get(Integer.parseInt(value[2])).setDefaultVal("on");
+                    }
+                    else{
+                        switchList.get(Integer.parseInt(value[2])).setDefaultVal("off");
+                    
+                    }
+                    for(int i : switchList.keySet()){
+                        switchChange="change;;switch::"+value[1]+"::"+switchList.get(i).getId()+"::"+switchList.get(i).getDefaultVal();
+                        Main.server.enviaCanvi(switchChange);
+                    }
+                }
+            });
+            togglebutton_panel.add(label);
+            togglebutton_panel.add(jtb);
+        }
+        //Slider
+        if (value[0].equals("slider")){
+            sliderList.put(Integer.parseInt(value[2]), new Slider(Integer.parseInt(value[2]), Integer.parseInt(value[3]), Integer.parseInt(value[5]), Integer.parseInt(value[4]), Integer.parseInt(value[6]), value[7]));
+            JSlider slider = new JSlider();
+            slider.setMaximumSize(new Dimension((int) slider.getPreferredSize().getWidth(), 40));
+            slider.setSnapToTicks(true);
+            slider.setPaintTicks(true);
+            slider.setMinimum(Integer.parseInt(value[5]));
+            slider.setMaximum(Integer.parseInt(value[4]));
+            slider.setMinorTickSpacing(Integer.parseInt(value[6]));
+            slider.setMajorTickSpacing(Integer.parseInt(value[6]));
+            slider.setValue(Integer.parseInt(value[3]));
+            slider.setPaintLabels(true);
+            JLabel label = new JLabel(value[7]);
+			label.setAlignmentX(Frame.CENTER_ALIGNMENT);
+            jsliders.put(Integer.parseInt(value[2]), slider);
+            slider.addChangeListener(new ChangeListener() {
+				
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    // TODO Auto-generated method stub
+                    sliderList.get(Integer.parseInt(value[2])).setDefaultVal(slider.getValue());
+                    System.out.println(slider.getValue());
+                    String sliderChange="";
+                        for(int j : sliderList.keySet()){
+                            sliderChange="change;;slider::"+value[1]+"::"+sliderList.get(j).getId()+"::"+sliderList.get(j).getDefaultVal();
+                            Main.server.enviaCanvi(sliderChange);
+                        }
+                    }
+            });
+            slider_panel.add(label);
+            slider_panel.add(slider);
+
+        }
+        if (value[0].equals("dropdown")){
+            String[] options = value[5].split("/");
+            Dropdown drw = new Dropdown(Integer.parseInt(value[2]), Integer.parseInt(value[3]), options.length, value[4]);
+            
+            JComboBox combo = new JComboBox();
+            combo.setMaximumSize(new Dimension(100,25));
+            combo.setBounds(100, 200, 100, 200);
+            for(int i = 0;i<options.length;i++){
+                String[] opc = options[i].split(":");
+                combo.addItem(opc[1]);
+                System.out.println(opc[0]+" "+opc[1]);
+                drw.setOption(i, 0, opc[0]);
+                drw.setOption(i, 1, opc[1]);
+                
+            }
+            combo.addActionListener(new ActionListener(){
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // TODO Auto-generated method stub
+                    dropdownList.get(Integer.parseInt(value[2])).setDefaultVal(combo.getSelectedIndex());
+                    String dropdownChange="";
+                    for(int i : dropdownList.keySet()){
+                        dropdownChange="change;;dropdown::"+value[1]+"::"+dropdownList.get(i).getId()+"::"+dropdownList.get(i).getDefaultVal()+"::";
+                        Main.server.enviaCanvi(dropdownChange);
+                    }
+                }
+                
+            });
+            dropdownList.put(Integer.parseInt(value[2]), drw);
+            
+            JLabel label = new JLabel(value[4]);
+			label.setAlignmentX(Frame.CENTER_ALIGNMENT);
+            combo.setSelectedIndex(Integer.parseInt(value[3]));
+            comboBoxes.put(Integer.parseInt(value[2]), combo);
+            
+            dropdown_panel.add(label);
+            dropdown_panel.add(combo);
+
+        }
+        if (value[0].equals("sensor")){
+            sensorList.put(Integer.parseInt(value[2]), new Sensor(Integer.parseInt(value[2]), value[3], Integer.parseInt(value[4]), Integer.parseInt(value[5]), Integer.parseInt(value[6]), value[7]));
+
+            int randomValue = Integer.parseInt(value[6]);
+            JTextArea sensor = new JTextArea();
+            int id = Integer.parseInt(value[2]);
+            String units = value[3];
+            int low = Integer.parseInt(value[4]);
+            int high = Integer.parseInt(value[5]);
+            sensor.setMaximumSize(new Dimension(100,25));
+            sensor.setText(randomValue+units);
+            sensor.setEditable(false);
+            if(randomValue>=low&&randomValue<=high){
+                sensor.setBackground(Color.GREEN);
+            }
+            else if(randomValue<low){
+                sensor.setBackground(Color.cyan);
+            }
+            else if(randomValue>high){
+                sensor.setBackground(Color.RED);
+            }
+            
+            
+            
+            JLabel label = new JLabel(value[7]);
+			label.setAlignmentX(Frame.CENTER_ALIGNMENT);
+            texts.put(Integer.parseInt(value[2]), sensor);
+            
+            sensor_panel.add(label);
+            sensor_panel.add(sensor);
+
+        }
+    }
+
+    public void updateAllPanels(){
+        //togglebutton_panel.revalidate();
+        //togglebutton_panel.repaint();
+        //contentPane.revalidate();
+        //contentPane.repaint();
     }
 
     public JPanel getContentPane() {

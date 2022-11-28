@@ -54,6 +54,7 @@ public class XmlReader {
 	private JPanel sensor_panel = new JPanel();
 	private boolean cont=true;
 	static Document doc;
+	private boolean isEmpty = false;
 
 	DocumentBuilderFactory dbFactory;
 	DocumentBuilder dBuilder;
@@ -66,6 +67,9 @@ public class XmlReader {
 
 	public boolean getCont(){
 		return this.cont;
+	}
+	public XmlReader(){
+		isEmpty=true;
 	}
 	public XmlReader(String path, JFrame Frame){
 		this.Frame = Frame;
@@ -80,7 +84,9 @@ public class XmlReader {
 			showError("XML badly written");
 		}
 	}
-
+	public boolean isEmpty(){
+		return isEmpty;
+	}
 	public void loadBlocks(){
 		NodeList list = doc.getElementsByTagName("controls");
 		
