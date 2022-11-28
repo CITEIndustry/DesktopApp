@@ -39,5 +39,16 @@
         </dropdown>
         <sensor id="6" units="ºC" thresholdlow="5" thresholdhigh="10">Boiler 1</sensor>
     </controls>
+     <controls name="block3">
+        <switch id="3" default="on">Reception Light</switch>
+        <slider id="4" default="5" min="0" max="10" step="1">Boiler 1</slider>
+        <dropdown id="5" default="2" label="Boiler 2">
+            <option value="1">Cold</option>
+            <option value="2">Chill</option>
+            <option value="3">Hot</option>
+            <option value="4">Burning</option>
+        </dropdown>
+        <sensor id="6" units="ºC" thresholdlow="5" thresholdhigh="10">Boiler 1</sensor>
+    </controls>
     
 </root>

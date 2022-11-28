@@ -20,19 +20,19 @@ import javax.swing.border.MatteBorder;
 
 public class Block implements Serializable {
     private String name;
-    private Map<Integer, Switch> switchList;
-    private Map<Integer, Slider> sliderList;
-    private Map<Integer, Dropdown> dropdownList;
-    private Map<Integer, Sensor> sensorList;
+    private Map<Integer, Switch> switchList = new HashMap<Integer, Switch>();
+    private Map<Integer, Slider> sliderList = new HashMap<Integer, Slider>();;
+    private Map<Integer, Dropdown> dropdownList = new HashMap<Integer, Dropdown>();
+    private Map<Integer, Sensor> sensorList = new HashMap<Integer, Sensor>();
     private JPanel contentPane = new JPanel();
     private JPanel togglebutton_panel = new JPanel();
 	private JPanel slider_panel = new JPanel();
 	private JPanel dropdown_panel = new JPanel();
 	private JPanel sensor_panel = new JPanel();
-    public static Map<Integer, JToggleButton> switches = new HashMap<>();
-	public static Map<Integer, JSlider> jsliders = new HashMap<>();
-	public static Map<Integer, JComboBox> comboBoxes = new HashMap<>();
-	public static Map<Integer, JTextArea> texts = new HashMap<>();
+    public Map<Integer, JToggleButton> switches = new HashMap<>();
+	public Map<Integer, JSlider> jsliders = new HashMap<>();
+	public Map<Integer, JComboBox> comboBoxes = new HashMap<>();
+	public Map<Integer, JTextArea> texts = new HashMap<>();
     private XmlReader xml;
 
     public Block(String name, XmlReader xml){
@@ -111,7 +111,7 @@ public class Block implements Serializable {
 				sensor_header.add(sensor_label);
 				sensor_label.setVerticalAlignment(SwingConstants.CENTER);
 
-                switches.get(2).setEnabled(true);
+                //switches.get(2).setEnabled(true);
                 
                 //contentPane.add(togglebutton_panel);
                 //contentPane.add(slider_panel);
@@ -160,10 +160,10 @@ public class Block implements Serializable {
     }
 
     public void loadAllComponents(){
-        togglebutton_panel = xml.loadJToggleButtons(name,switches);
-        slider_panel = xml.loadJSliders(name,jsliders);
-        dropdown_panel = xml.loadJDropdown(name,comboBoxes);
-        sensor_panel = xml.loadSensor(name,texts);
+        togglebutton_panel = xml.loadJToggleButtons(name,switches, switchList);
+        slider_panel = xml.loadJSliders(name,jsliders, sliderList);
+        dropdown_panel = xml.loadJDropdown(name,comboBoxes, dropdownList);
+        sensor_panel = xml.loadSensor(name,texts, sensorList);
         contentPane.validate();
         contentPane.repaint();
     }
@@ -216,36 +216,36 @@ public class Block implements Serializable {
         this.xml = xml;
     }
 
-    public static Map<Integer, JToggleButton> getSwitches() {
+    public Map<Integer, JToggleButton> getSwitches() {
         return switches;
     }
 
-    public static void setSwitches(Map<Integer, JToggleButton> switches) {
-        Block.switches = switches;
+    public void setSwitches(Map<Integer, JToggleButton> switches) {
+        this.switches = switches;
     }
 
-    public static Map<Integer, JSlider> getJsliders() {
+    public Map<Integer, JSlider> getJsliders() {
         return jsliders;
     }
 
-    public static void setJsliders(Map<Integer, JSlider> jsliders) {
-        Block.jsliders = jsliders;
+    public void setJsliders(Map<Integer, JSlider> jsliders) {
+        this.jsliders = jsliders;
     }
 
-    public static Map<Integer, JComboBox> getComboBoxes() {
+    public Map<Integer, JComboBox> getComboBoxes() {
         return comboBoxes;
     }
 
-    public static void setComboBoxes(Map<Integer, JComboBox> comboBoxes) {
-        Block.comboBoxes = comboBoxes;
+    public void setComboBoxes(Map<Integer, JComboBox> comboBoxes) {
+        this.comboBoxes = comboBoxes;
     }
 
-    public static Map<Integer, JTextArea> getTexts() {
+    public Map<Integer, JTextArea> getTexts() {
         return texts;
     }
 
-    public static void setTexts(Map<Integer, JTextArea> texts) {
-        Block.texts = texts;
+    public void setTexts(Map<Integer, JTextArea> texts) {
+        this.texts = texts;
     }
     
     

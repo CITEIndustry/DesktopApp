@@ -93,10 +93,10 @@ public class XmlReader {
 			}
 		}
 	}
-	public JPanel loadJToggleButtons(String blockId, Map<Integer,JToggleButton> jtb) {
+	public JPanel loadJToggleButtons(String blockId, Map<Integer,JToggleButton> jtb, Map<Integer,Switch> toggleButtons) {
 		JPanel togglebutton_panel = new JPanel();
 		togglebutton_panel.removeAll();
-		Main.toggleButtons = new HashMap<Integer, Switch>();
+	
 		//Loading all controls
 		try{
 			NodeList controls = doc.getElementsByTagName("controls");
@@ -127,7 +127,7 @@ public class XmlReader {
 								JLabel label = new JLabel(elm.getTextContent());
 								label.setAlignmentX(Frame.CENTER_ALIGNMENT);
 								togglebutton_panel.add(label);
-								Main.toggleButtons.put(Integer.parseInt(elm.getAttribute("id")),new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getTextContent(),elm.getAttribute("default")));
+								toggleButtons.put(Integer.parseInt(elm.getAttribute("id")),new Switch(Integer.parseInt(elm.getAttribute("id")),elm.getTextContent(),elm.getAttribute("default")));
 								button.setAlignmentX(Frame.CENTER_ALIGNMENT);
 								button.addChangeListener(new ChangeListener() {
 				
@@ -136,14 +136,14 @@ public class XmlReader {
 										// TODO Auto-generated method stub
 										String switchChange="";
 										if(button.isSelected()){
-											Main.toggleButtons.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal("on");
+											toggleButtons.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal("on");
 										}
 										else{
-											Main.toggleButtons.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal("off");
+											toggleButtons.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal("off");
 										
 										}
-										for(int i : Main.toggleButtons.keySet()){
-											switchChange="change;;switch::"+Main.toggleButtons.get(i).getId()+"::"+Main.toggleButtons.get(i).getDefaultVal();
+										for(int i : toggleButtons.keySet()){
+											switchChange="change;;switch::"+toggleButtons.get(i).getId()+"::"+toggleButtons.get(i).getDefaultVal();
 											Main.server.enviaCanvi(switchChange);
 										}
 									}
@@ -168,10 +168,9 @@ public class XmlReader {
 		return togglebutton_panel;
 	}
 
-	public JPanel loadJSliders(String blockId, Map<Integer,JSlider> jslid) {
+	public JPanel loadJSliders(String blockId, Map<Integer,JSlider> jslid, Map<Integer,Slider> sliders) {
 		JPanel slider_panel = new JPanel();
 		slider_panel.removeAll();
-		Main.sliders = new HashMap<Integer, Slider>();
 		NodeList controls = doc.getElementsByTagName("controls");
 		try{
 			
@@ -201,7 +200,7 @@ public class XmlReader {
 								slider.setMajorTickSpacing(step);
 								slider.setValue(initialValue);
 								slider.setPaintLabels(true);
-								Main.sliders.put(Integer.parseInt(elm.getAttribute("id")),new Slider(Integer.parseInt(elm.getAttribute("id")),Integer.parseInt(elm.getAttribute("default")),Integer.parseInt(elm.getAttribute("min")),Integer.parseInt(elm.getAttribute("max")),Integer.parseInt(elm.getAttribute("step")),elm.getTextContent()));
+								sliders.put(Integer.parseInt(elm.getAttribute("id")),new Slider(Integer.parseInt(elm.getAttribute("id")),Integer.parseInt(elm.getAttribute("default")),Integer.parseInt(elm.getAttribute("min")),Integer.parseInt(elm.getAttribute("max")),Integer.parseInt(elm.getAttribute("step")),elm.getTextContent()));
 								slider.setAlignmentX(Frame.CENTER_ALIGNMENT);
 								slider_panel.add(Box.createRigidArea(new Dimension(0, 10)));
 								slider.addChangeListener(new ChangeListener() {
@@ -209,11 +208,11 @@ public class XmlReader {
 									@Override
 									public void stateChanged(ChangeEvent e) {
 										// TODO Auto-generated method stub
-										Main.sliders.get(id).setDefaultVal(slider.getValue());
+										sliders.get(id).setDefaultVal(slider.getValue());
 										System.out.println(slider.getValue());
 										String sliderChange="";
-											for(int j : Main.sliders.keySet()){
-												sliderChange="change;;slider::"+Main.sliders.get(j).getId()+"::"+Main.sliders.get(j).getDefaultVal();
+											for(int j : sliders.keySet()){
+												sliderChange="change;;slider::"+sliders.get(j).getId()+"::"+sliders.get(j).getDefaultVal();
 												Main.server.enviaCanvi(sliderChange);
 											}
 										}
@@ -241,10 +240,10 @@ public class XmlReader {
 		return slider_panel;
 	}
 
-	public JPanel loadJDropdown(String blockId, Map<Integer,JComboBox> jcb) {
+	public JPanel loadJDropdown(String blockId, Map<Integer,JComboBox> jcb, Map<Integer,Dropdown> dropdowns) {
 		JPanel dropdown_panel = new JPanel();
 		dropdown_panel.removeAll();
-		Main.dropdowns = new HashMap<Integer, Dropdown>();
+		//dropdowns = new HashMap<Integer, Dropdown>();
 		JLabel label = new JLabel();
 		int defVal=0;
 		NodeList controls = doc.getElementsByTagName("controls");
@@ -279,16 +278,16 @@ public class XmlReader {
 									}
 									
 								}
-								Main.dropdowns.put(Integer.parseInt(elm.getAttribute("id")),drw);
+								dropdowns.put(Integer.parseInt(elm.getAttribute("id")),drw);
 								combo.addActionListener(new ActionListener(){
 
 									@Override
 									public void actionPerformed(ActionEvent e) {
 										// TODO Auto-generated method stub
-										Main.dropdowns.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal(combo.getSelectedIndex());
+										dropdowns.get(Integer.parseInt(elm.getAttribute("id"))).setDefaultVal(combo.getSelectedIndex());
 										String dropdownChange="";
-										for(int i : Main.dropdowns.keySet()){
-											dropdownChange="change;;dropdown::"+Main.dropdowns.get(i).getId()+"::"+Main.dropdowns.get(i).getDefaultVal()+"::";
+										for(int i : dropdowns.keySet()){
+											dropdownChange="change;;dropdown::"+dropdowns.get(i).getId()+"::"+dropdowns.get(i).getDefaultVal()+"::";
 											Main.server.enviaCanvi(dropdownChange);
 										}
 									}
@@ -323,10 +322,10 @@ public class XmlReader {
 		return dropdown_panel;
 	}
 
-	public JPanel loadSensor(String blockId, Map<Integer,JTextArea> ta){
+	public JPanel loadSensor(String blockId, Map<Integer,JTextArea> ta, Map<Integer,Sensor> sensors){
 		JPanel sensor_panel = new JPanel();
 		sensor_panel.removeAll();
-		Main.sensors = new HashMap<Integer, Sensor>();
+		
 
 		NodeList controls = doc.getElementsByTagName("controls");
 		try{
@@ -360,7 +359,7 @@ public class XmlReader {
 								else if(randomValue>high){
 									sensor.setBackground(Color.RED);
 								}
-								Main.sensors.put(id,new Sensor(id,units,low,high,randomValue,elm.getTextContent()));
+								sensors.put(id,new Sensor(id,units,low,high,randomValue,elm.getTextContent()));
 								JLabel label = new JLabel(elm.getTextContent());
 								label.setAlignmentX(Frame.CENTER_ALIGNMENT);
 								sensor_panel.add(label);

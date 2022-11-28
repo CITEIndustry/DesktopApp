@@ -235,6 +235,7 @@ public class Frame extends JFrame {
 			}
 			this.revalidate();
 			this.repaint();
+			Main.blocks.get("block1").getSwitches().get(2).setSelected(true);
 			System.out.println(filePath);
 			/*
 				if(Main.comboBoxes!=null){

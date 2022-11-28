@@ -13,10 +13,6 @@ import java.util.Map;
 
 public class Main extends JFrame {
 
-	public static Map<Integer, Switch> toggleButtons;
-	public static Map<Integer, Slider> sliders;
-	public static Map<Integer, Dropdown> dropdowns;
-	public static Map<Integer, Sensor> sensors;
 	public static Map<String, Block> blocks = new HashMap<>();
 	public static Server server;
 	//public static ArrayList<Switch> toggleButtons;
