@@ -25,7 +25,7 @@ import com.password4j.Password;
 
 
 public class Server extends WebSocketServer {
-        private Connection connDBUser;
+        public static Connection connDBUser;
         private Connection connDBSalt;
         private Connection connDBPepper;
         
@@ -33,6 +33,9 @@ public class Server extends WebSocketServer {
 
         public Server(int port) throws UnknownHostException {
             super(new InetSocketAddress(port));
+            String basePath = System.getProperty("user.dir") + File.separator;
+            String filePath1 = basePath + "databaseIndustrialUser.db";
+            connDBUser=UtilsSQLite.connect(filePath1);
         }
         public Server(InetSocketAddress address) {
             super(address);

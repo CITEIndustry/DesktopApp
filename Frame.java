@@ -89,36 +89,36 @@ public class Frame extends JFrame {
 				// TODO Auto-generated method stub
 				String basePath = System.getProperty("user.dir") + File.separator;
 				String filePath = basePath + "databaseIndustrialUser.db";
-            	Connection connDBUser=UtilsSQLite.connect(filePath);
+            	//Connection connDBUser=UtilsSQLite.connect(filePath);
 				UtilsSQLite.connect(filePath);
 				String user = JOptionPane.showInputDialog("Type your username:");
-				ResultSet userId = UtilsSQLite.querySelect(connDBUser, "SELECT id FROM user where name ='"+user+"';");
+				ResultSet userId = UtilsSQLite.querySelect(Server.connDBUser, "SELECT id FROM user where name ='"+user+"';");
 				int usId = 0;
 				try {
 					usId = userId.getInt("id");
-					UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO snapshot (day,idUser) VALUES (datetime('now','localtime'),"+usId+");");
+					UtilsSQLite.queryUpdate(Server.connDBUser, "INSERT INTO snapshot (day,idUser) VALUES (datetime('now','localtime'),"+usId+");");
 				} catch (SQLException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
 				}
 				if(usId!=0){
-					ResultSet rsId = UtilsSQLite.querySelect(connDBUser, "SELECT id FROM snapshot ORDER BY id desc;");
+					ResultSet rsId = UtilsSQLite.querySelect(Server.connDBUser, "SELECT id FROM snapshot ORDER BY id desc;");
 					try {
 						if(Main.blocks!=null){
 							for(String s : Main.blocks.keySet()){
 								String componentText="block::"+Main.blocks.get(s).getName();
 								System.out.println("sihaybloke");
-								UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+								UtilsSQLite.queryUpdate(Server.connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
 																+componentText+"\","+rsId.getInt("id")+");");
 								for(int i : Main.blocks.get(s).getSwitchList().keySet()){
 									componentText="switch::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getSwitchList().get(i).getId()+"::"+Main.blocks.get(s).getSwitchList().get(i).getDefaultVal()+"::"+Main.blocks.get(s).getSwitchList().get(i).getLabel();
-									UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+									UtilsSQLite.queryUpdate(Server.connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
 																+componentText+"\","+rsId.getInt("id")+");");
 								}
 								for(int i : Main.blocks.get(s).getSliderList().keySet()){
 									componentText="slider::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getSliderList().get(i).getId()+"::"+Main.blocks.get(s).getSliderList().get(i).getDefaultVal()+"::"+Main.blocks.get(s).getSliderList().get(i).getMax()
 									+"::"+Main.blocks.get(s).getSliderList().get(i).getMin()+"::"+Main.blocks.get(s).getSliderList().get(i).getStep()+"::"+Main.blocks.get(s).getSliderList().get(i).getLabel();
-									UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+									UtilsSQLite.queryUpdate(Server.connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
 																+componentText+"\","+rsId.getInt("id")+");");
 								}
 								for(int i : Main.blocks.get(s).getDropdownList().keySet()){
@@ -126,13 +126,13 @@ public class Frame extends JFrame {
 									for(int j=0;j<Main.blocks.get(s).getDropdownList().get(i).getOption().length;j++){
 										componentText=componentText+Main.blocks.get(s).getDropdownList().get(i).getOption()[j][0]+":"+Main.blocks.get(s).getDropdownList().get(i).getOption()[j][1]+"/";
 									}
-									UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+									UtilsSQLite.queryUpdate(Server.connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
 									+componentText+"\","+rsId.getInt("id")+");");
 								}
 								for(int i : Main.blocks.get(s).getSensorList().keySet()){
 									componentText="sensor::"+Main.blocks.get(s).getName()+"::"+Main.blocks.get(s).getSensorList().get(i).getId()+"::"+Main.blocks.get(s).getSensorList().get(i).getUnits()+"::"+Main.blocks.get(s).getSensorList().get(i).getThresholdlow()
 									+"::"+Main.blocks.get(s).getSensorList().get(i).getThresholdhight()+"::"+Main.blocks.get(s).getSensorList().get(i).getValue()+"::"+Main.blocks.get(s).getSensorList().get(i).getLabel();
-									UtilsSQLite.queryUpdate(connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
+									UtilsSQLite.queryUpdate(Server.connDBUser, "INSERT INTO components(component,idSnapshot) VALUES (\""
 									+componentText+"\","+rsId.getInt("id")+");");
 								}
 							}
@@ -142,7 +142,7 @@ public class Frame extends JFrame {
 					e1.printStackTrace();
 				}
 			}
-			UtilsSQLite.disconnect(connDBUser);
+			
 			}
 			
 		});
@@ -157,9 +157,9 @@ public class Frame extends JFrame {
 				String basePath = System.getProperty("user.dir") + File.separator;
 				String filePath = basePath + "databaseIndustrialUser.db";
 				ArrayList<String> snapshots = new ArrayList<String>();
-				Connection connDBUser=UtilsSQLite.connect(filePath);
+				//Connection connDBUser=UtilsSQLite.connect(filePath);
 				String user = JOptionPane.showInputDialog("Type your username:");
-				ResultSet userId = UtilsSQLite.querySelect(connDBUser, "SELECT id FROM user where name ='"+user+"';");
+				ResultSet userId = UtilsSQLite.querySelect(Server.connDBUser, "SELECT id FROM user where name ='"+user+"';");
 				int usId = -1;
 				try {
 					usId = userId.getInt("id");
@@ -177,7 +177,7 @@ public class Frame extends JFrame {
 					panelDePestanas.setBorder(new EmptyBorder(5, 5, 5, 5));
 					setContentPane(panelDePestanas);
 					System.out.println("me ejecurototototo");
-					ResultSet rs = UtilsSQLite.querySelect(connDBUser, "SELECT id, day FROM snapshot WHERE idUser="+usId+";");
+					ResultSet rs = UtilsSQLite.querySelect(Server.connDBUser, "SELECT id, day FROM snapshot WHERE idUser="+usId+";");
 					try{
 						while(rs.next()){
 							//System.out.println(rs.getString(1));
@@ -189,7 +189,7 @@ public class Frame extends JFrame {
 					}
 					//Loading all
 					String idSnapshot = showSelector(snapshots);
-					rs = UtilsSQLite.querySelect(connDBUser, "SELECT component FROM components WHERE idSnapshot="+idSnapshot);
+					rs = UtilsSQLite.querySelect(Server.connDBUser, "SELECT component FROM components WHERE idSnapshot="+idSnapshot);
 					String[] componentsData;
 					//Loading all blocks
 					try{
@@ -208,7 +208,7 @@ public class Frame extends JFrame {
 					}
 					//Loading all components
 					try{
-						rs = UtilsSQLite.querySelect(connDBUser, "SELECT component FROM components WHERE idSnapshot="+idSnapshot);
+						rs = UtilsSQLite.querySelect(Server.connDBUser, "SELECT component FROM components WHERE idSnapshot="+idSnapshot);
 						while(rs.next()){
 							System.out.println(rs.getString(1));
 							componentsData = rs.getString(1).split("::");
@@ -221,7 +221,7 @@ public class Frame extends JFrame {
 						showError("Cannot load the selected snapshot");
 					}
 				}
-				UtilsSQLite.disconnect(connDBUser);
+				UtilsSQLite.disconnect(Server.connDBUser);
 				
 			}
 
